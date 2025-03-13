@@ -1,6 +1,6 @@
 ﻿namespace BusRouteControl.Domain.Entities;
 
-public partial class Users
+public partial class User
 {
     public int Id { get; set; }
 
@@ -12,5 +12,5 @@ public partial class Users
 
     public string Role { get; set; } = null!;
 
-    public virtual ICollection<Tickets> Tickets { get; set; } = new List<Tickets>();
+    public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }

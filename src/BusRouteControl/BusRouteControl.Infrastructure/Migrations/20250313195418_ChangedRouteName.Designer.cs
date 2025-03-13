@@ -4,6 +4,7 @@ using BusRouteControl.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusRouteControl.Infrastructure.Migrations
 {
     [DbContext(typeof(BusRouteControlDbContext))]
-    partial class BusRouteControlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250313195418_ChangedRouteName")]
+    partial class ChangedRouteName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +51,7 @@ namespace BusRouteControl.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Routes__3214EC07D09BDA28");
 
-                    b.ToTable("BusRoutes");
+                    b.ToTable("Routes");
                 });
 
             modelBuilder.Entity("BusRouteControl.Domain.Entities.Schedule", b =>
@@ -59,11 +62,11 @@ namespace BusRouteControl.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<TimeOnly>("ArrivalTime")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("ArrivalTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<TimeOnly>("DepartureTime")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("DepartureTime")
+                        .HasColumnType("datetime");
 
                     b.Property<int>("RouteId")
                         .HasColumnType("int");

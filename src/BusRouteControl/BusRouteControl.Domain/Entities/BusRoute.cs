@@ -1,6 +1,6 @@
 ﻿namespace BusRouteControl.Domain.Entities;
 
-public partial class Routes
+public partial class BusRoute
 {
     public int Id { get; set; }
 
@@ -10,5 +10,5 @@ public partial class Routes
 
     public string Destination { get; set; } = null!;
 
-    public virtual ICollection<Schedules> Schedules { get; set; } = new List<Schedules>();
+    public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 }

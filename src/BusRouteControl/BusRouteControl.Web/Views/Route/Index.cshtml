@@ -1,0 +1,68 @@
+﻿@model List<BusRouteScheduleViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1> Lista de Rutas </h1>
+
+
+<table class="table table-bordered">
+    <thead style="background-color: #023673">
+        <tr>
+            <th>Nombre de Ruta</th>
+            <th>Origen</th>
+            <th>Destino</th>
+            <th>Hora de salida</th>
+            <th>Hora de llegada</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            @foreach (var schedule in r.Schedules)
+            {
+                <tr>
+                    @* Route Details for each Schedule *@
+                    @if (schedule.Equals(r.Schedules.First()))  // Show route details only for the first schedule row
+                    {
+                        <td rowspan="@r.Schedules.Count">@r.RouteName</td>
+                        <td rowspan="@r.Schedules.Count">@r.RouteOrigin</td>
+                        <td rowspan="@r.Schedules.Count">@r.RouteDestination</td>
+                    }
+                    <td>@schedule.DepartureTime</td>
+                    <td>@schedule.ArrivalTime</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+
+
+@* <table class="table table-bordered table-striped"> 
+    <thead style="background-color: #023673" >
+        <tr> 
+            <th>Nombre</th>
+            <th>Origen</th>
+            <th>Destino</th>
+            <th>Hora de salida</th>
+            <th>Hora de llegada</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.RouteName</td>
+                <td>@r.RouteOrigin</td>
+                <td>@r.RouteDestination</td>
+                <td>@r.RouteDestination</td>
+                <td>@r.RouteDestination</td>
+            </tr>
+        }
+    </tbody>
+</table> *@

@@ -17,13 +17,13 @@ public partial class BusRouteControlDbContext : DbContext
         _configuration = configuration;
     }
 
-    public virtual DbSet<Routes> Routes { get; set; }
+    public virtual DbSet<BusRoute> BusRoutes { get; set; }
 
-    public virtual DbSet<Schedules> Schedules { get; set; }
+    public virtual DbSet<Schedule> Schedules { get; set; }
 
-    public virtual DbSet<Tickets> Tickets { get; set; }
+    public virtual DbSet<Ticket> Tickets { get; set; }
 
-    public virtual DbSet<Users> Users { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -37,7 +37,7 @@ public partial class BusRouteControlDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Routes>(entity =>
+        modelBuilder.Entity<BusRoute>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Routes__3214EC07D09BDA28");
 
@@ -46,18 +46,18 @@ public partial class BusRouteControlDbContext : DbContext
             entity.Property(e => e.Origin).HasMaxLength(100);
         });
 
-        modelBuilder.Entity<Schedules>(entity =>
+        modelBuilder.Entity<Schedule>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Schedule__3214EC075FB0C618");
 
-            entity.Property(e => e.DepartureTime).HasColumnType("datetime");
+            entity.Property(e => e.DepartureTime).HasColumnType("time");
 
             entity.HasOne(d => d.Route).WithMany(p => p.Schedules)
                 .HasForeignKey(d => d.RouteId)
                 .HasConstraintName("FK__Schedules__Route__4F7CD00D");
         });
 
-        modelBuilder.Entity<Tickets>(entity =>
+        modelBuilder.Entity<Ticket>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Tickets__3214EC07CA46B105");
 
@@ -77,7 +77,7 @@ public partial class BusRouteControlDbContext : DbContext
                 .HasConstraintName("FK__Tickets__UserId__5535A963");
         });
 
-        modelBuilder.Entity<Users>(entity =>
+        modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07355C7797");
 

@@ -1,6 +1,6 @@
 ﻿namespace BusRouteControl.Domain.Entities;
 
-public partial class Tickets
+public partial class Ticket
 {
     public int Id { get; set; }
 
@@ -12,7 +12,7 @@ public partial class Tickets
 
     public DateTime? BookingDate { get; set; }
 
-    public virtual Schedules Schedule { get; set; } = null!;
+    public virtual Schedule Schedule { get; set; } = null!;
 
-    public virtual Users User { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 }
