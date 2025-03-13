@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
+    <ProjectReference Include="..\BusRouteControl.Domain\BusRouteControl.Domain.csproj" />
   </ItemGroup>
 
 </Project>

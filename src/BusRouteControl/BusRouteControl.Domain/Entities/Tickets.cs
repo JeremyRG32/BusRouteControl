@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BusRouteControl.Web.Data.Entities;
+﻿namespace BusRouteControl.Domain.Entities;
 
 public partial class Tickets
 {

@@ -20,4 +20,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BusRouteControl.Infrastructure\BusRouteControl.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
