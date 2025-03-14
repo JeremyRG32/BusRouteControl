@@ -1,0 +1,61 @@
+﻿@model BusRouteScheduleViewModel
+
+<div class="w-100 card border-bottom-0">
+    <div class="card-header ml-0 py-3" style="background-color: #023673">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Añadir Ruta</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-body border p-4">
+    <form method="post" class="row">
+
+        <div class="form-floating py-0 col-12">
+            <input asp-for="RouteName" class="form-control border shadow"/>
+            <label asp-for="RouteName" class="ms-2">Nombre de la Ruta</label>
+        </div>       
+        <div class="form-floating py-0 col-12">
+            <input asp-for="RouteOrigin" class="form-control border shadow"/>
+            <label asp-for="RouteOrigin" class="ms-2">Origen</label>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="RouteDestination" class="form-control border shadow"/>
+            <label asp-for="RouteDestination" class="ms-2">Destino</label>
+        </div>
+        <div class="w-100 card border-bottom-0">
+            <div class="card-header ml-0 py-3" style="background-color: #023673">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h2 class="text-white py-2">Añadir Horario</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="Schedules[0].DepartureTime" type="time" class="form-control border shadow" />
+            <label asp-for="Schedules[0].DepartureTime" class="ms-2">Hora de Salida</label>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="Schedules[0].ArrivalTime" type="time" class="form-control border shadow" />
+            <label asp-for="Schedules[0].ArrivalTime" class="ms-2">Hora de Llegada</label>
+        </div>
+        <div class="row pt-2">
+            <div class="col-7 col-md-4">
+                <button type="submit" class="btn btn-primary">
+                 <i class="bi bi-check-circle"></i> Confirm
+                </button>
+                <button type="submit" class="btn btn-warning text-white">
+                    <i class="bi bi-dash-circle" style="color:white"></i> Reset
+                </button>
+                <a class="btn btn-danger" asp-controller="Route" asp-action="Index"> <i class="bi bi-x-circle"></i> Cancel</a>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+
+        

@@ -4,65 +4,52 @@
 *@
 @{
 }
+<div class="w-100 card border-bottom-0">
+    <div class="card-header ml-0 py-3" style="background-color: #023673">
+        <div class="row">
+            <div class="col-12 text-center ">
+                <h2 class="text-white py-2"><i class="bi bi-bus-front"></i> Lista de Rutas </h2>
+            </div>
+        </div>
+    </div>
+</div>
 
-<h1> Lista de Rutas </h1>
-
+<div class="card-body border p-3" style="background-color: #023673">
+        <div class="row pb-0">
+            <div class="col-6 offset-6 text-end" >
+                <a asp-controller="Route" asp-action="Create" class="btn btn-light"> <i class="bi bi-plus-circle"></i> Create New Route </a>
+            </div>
+        </div>
+    </div>
 
 <table class="table table-bordered">
-    <thead style="background-color: #023673">
-        <tr>
-            <th>Nombre de Ruta</th>
-            <th>Origen</th>
-            <th>Destino</th>
-            <th>Hora de salida</th>
-            <th>Hora de llegada</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var r in Model)
-        {
-            @foreach (var schedule in r.Schedules)
-            {
-                <tr>
-                    @* Route Details for each Schedule *@
-                    @if (schedule.Equals(r.Schedules.First()))  // Show route details only for the first schedule row
-                    {
-                        <td rowspan="@r.Schedules.Count">@r.RouteName</td>
-                        <td rowspan="@r.Schedules.Count">@r.RouteOrigin</td>
-                        <td rowspan="@r.Schedules.Count">@r.RouteDestination</td>
-                    }
-                    <td>@schedule.DepartureTime</td>
-                    <td>@schedule.ArrivalTime</td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
-
-
-
-
-@* <table class="table table-bordered table-striped"> 
-    <thead style="background-color: #023673" >
-        <tr> 
-            <th>Nombre</th>
-            <th>Origen</th>
-            <th>Destino</th>
-            <th>Hora de salida</th>
-            <th>Hora de llegada</th>
-        </tr>
-    </thead>
-    <tbody>
-
-        @foreach (var r in Model)
-        {
+        <thead>
             <tr>
-                <td>@r.RouteName</td>
-                <td>@r.RouteOrigin</td>
-                <td>@r.RouteDestination</td>
-                <td>@r.RouteDestination</td>
-                <td>@r.RouteDestination</td>
+                <th>Nombre de Ruta</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th>Hora de salida</th>
+                <th>Hora de llegada</th>
             </tr>
-        }
-    </tbody>
-</table> *@
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                @foreach (var schedule in r.Schedules)
+                {
+                    <tr>
+                        @if (schedule.Equals(r.Schedules.First()))
+                        {
+                            <td rowspan="@r.Schedules.Count">@r.RouteName</td>
+                            <td rowspan="@r.Schedules.Count">@r.RouteOrigin</td>
+                            <td rowspan="@r.Schedules.Count">@r.RouteDestination</td>
+                        }
+                        <td>@schedule.DepartureTime</td>
+                        <td>@schedule.ArrivalTime</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+

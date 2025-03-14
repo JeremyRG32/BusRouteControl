@@ -1,4 +1,5 @@
-﻿using BusRouteControl.Infrastructure.Data;
+﻿using BusRouteControl.Domain.Entities;
+using BusRouteControl.Infrastructure.Data;
 using BusRouteControl.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ namespace BusRouteControl.Web.Controllers
         {
             _context = context;
         }
-        public ActionResult Index()
+        public IActionResult Index()
         {
             var BusRouteSchedule = _context.BusRoutes.Include(r => r.Schedules)
                 .Select(r => new BusRouteScheduleViewModel
@@ -27,6 +28,28 @@ namespace BusRouteControl.Web.Controllers
 
             return View(BusRouteSchedule);
         }
+        public IActionResult Create()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        public IActionResult Create(BusRouteScheduleViewModel obj)
+        {
+            BusRoute busroute = new BusRoute
+            {
+                Name = obj.RouteName,
+                Origin = obj.RouteOrigin,
+                Destination = obj.RouteDestination,
+                Schedules = obj.Schedules.Select(s => new Schedule
+                {
+                    DepartureTime = s.DepartureTime,
+                    ArrivalTime = s.ArrivalTime
+                }).ToList()
+            };
+            _context.BusRoutes.Add(busroute);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }
