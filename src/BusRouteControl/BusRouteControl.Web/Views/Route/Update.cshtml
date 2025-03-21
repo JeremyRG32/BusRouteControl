@@ -1,0 +1,120 @@
+﻿@model BusRouteScheduleViewModel
+
+<div class="w-100 card border-bottom-0">
+    <div class="card-header ml-0 py-3" style="background-color: #023673">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Edit Route</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-body border p-4">
+    <form method="post" class="row">
+
+        <div class="form-floating py-0 col-12">
+            <input asp-for="RouteName" class="form-control border shadow" />
+            <label asp-for="RouteName" class="ms-2">Nombre de la Ruta</label>
+            <span asp-validation-for="RouteName" class="text-danger"></span>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="RouteOrigin" class="form-control border shadow" />
+            <label asp-for="RouteOrigin" class="ms-2">Origen</label>
+            <span asp-validation-for="RouteOrigin" class="text-danger"></span>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="RouteDestination" class="form-control border shadow" />
+            <label asp-for="RouteDestination" class="ms-2">Destino</label>
+            <span asp-validation-for="RouteDestination" class="text-danger"></span>
+        </div>
+
+        <div class="w-100 card border-bottom-0">
+            <div class="card-header ml-0 py-3" style="background-color: #023673">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h2 class="text-white py-2">Edit Schedule</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="table" id="scheduleTable">
+            <thead>
+                <tr>
+                    <th>Departure Time</th>
+                    <th>Arrival Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Schedules.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <input type="hidden" name="Schedules[@i].Id" value="@Model.Schedules[i].Id" />
+                            <input type="time" name="Schedules[@i].DepartureTime" class="form-control" value="@Model.Schedules[i].DepartureTime.ToString("HH:mm")" />
+                        </td>
+                        <td>
+                            <input type="time" name="Schedules[@i].ArrivalTime" class="form-control" value="@Model.Schedules[i].ArrivalTime.ToString("HH:mm")" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger remove-schedule">
+                                <i class="bi bi-trash-fill" style="color:white"></i> Remove
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        
+
+        <div class="row pt-2">
+            <div class="col-7 col-md-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Confirm
+                </button>
+                <button type="reset" class="btn btn-warning text-white">
+                    <i class="bi bi-dash-circle" style="color:white"></i> Reset
+                </button>
+                <a class="btn btn-danger" asp-controller="Route" asp-action="Index"> <i class="bi bi-x-circle"></i> Cancel</a>
+                <button type="button" class="btn btn-success mt-1" id="addSchedule"> <i class="bi bi-plus-circle"></i> Add Schedule</button>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        <script>
+            document.getElementById("addSchedule").addEventListener("click", function () {
+                        var table = document.getElementById("scheduleTable").getElementsByTagName('tbody')[0];
+                        var rowCount = table.rows.length;
+
+                        var newRow = table.insertRow();
+                        newRow.innerHTML = `
+                            <td>
+                                <input type="hidden" name="Schedules[${rowCount}].Id" value="0" />
+                                <input type="time" name="Schedules[${rowCount}].DepartureTime" class="form-control" />
+                            </td>
+                            <td>
+                                <input type="time" name="Schedules[${rowCount}].ArrivalTime" class="form-control" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger remove-schedule">Remove</button>
+                            </td>
+                        `;
+                    });
+
+                    document.addEventListener("click", function (event) {
+                        if (event.target.classList.contains("remove-schedule")) {
+                            event.target.closest("tr").remove();
+                        }
+                    });
+                    </script>
+        <partial name="_ValidationScriptsPartial" />
+
+    }
+}

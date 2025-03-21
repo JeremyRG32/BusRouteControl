@@ -8,7 +8,7 @@
     <div class="card-header ml-0 py-3" style="background-color: #023673">
         <div class="row">
             <div class="col-12 text-center ">
-                <h2 class="text-white py-2"><i class="bi bi-bus-front"></i> Lista de Rutas </h2>
+                <h2 class="text-white py-2"><i class="bi bi-bus-front"></i> Routes List</h2>
             </div>
         </div>
     </div>
@@ -22,34 +22,45 @@
         </div>
     </div>
 
-<table class="table table-bordered">
+<table class="table table-bordered" style="background-color: dimgray">
         <thead>
             <tr>
-                <th>Nombre de Ruta</th>
-                <th>Origen</th>
-                <th>Destino</th>
-                <th>Hora de salida</th>
-                <th>Hora de llegada</th>
+                <th>Name</th>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var r in Model)
             {
+
                 @foreach (var schedule in r.Schedules)
                 {
                     <tr>
                         @if (schedule.Equals(r.Schedules.First()))
                         {
-                            <td rowspan="@r.Schedules.Count">@r.RouteName</td>
+                        <td rowspan="@r.Schedules.Count">@r.RouteName
+                            <br/> <div class="w-30 btn-group" role="group">
+                                <a asp-action="Update" asp-route-routeid="@r.BusRouteId"
+                                   class="btn btn-success mx-0">
+                                    <i i class="bi bi-pencil-square"> Edit</i>
+                                </a>
+                                <a asp-action="Delete" asp-route-routeid="@r.BusRouteId"
+                                   class="btn btn-danger mx-0">
+                                    <i i class="bi bi-trash-fill"> Delete</i>
+                                </a>
+                            </div>
+                        </td>
                             <td rowspan="@r.Schedules.Count">@r.RouteOrigin</td>
-                            <td rowspan="@r.Schedules.Count">@r.RouteDestination</td>
+                            <td rowspan="@r.Schedules.Count">@r.RouteDestination</td>                            
                         }
                         <td>@schedule.DepartureTime</td>
                         <td>@schedule.ArrivalTime</td>
+                   
                     </tr>
                 }
             }
         </tbody>
     </table>
-
-

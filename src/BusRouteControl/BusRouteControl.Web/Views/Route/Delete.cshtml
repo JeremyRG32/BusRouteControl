@@ -1,0 +1,90 @@
+﻿@model BusRouteScheduleViewModel
+
+<div class="w-100 card border-bottom-0">
+    <div class="card-header ml-0 py-3" style="background-color: #023673">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Route Details</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-body border p-4">
+    <form method="post" class="row">
+
+        <div class="form-floating py-0 col-12">
+            <input asp-for="BusRouteId" hidden class="form-control border shadow" />
+            <label asp-for="BusRouteId" class="ms-2">Nombre de la Ruta</label>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="RouteName" disabled class="form-control border shadow" />
+            <label asp-for="RouteName" class="ms-2">Nombre de la Ruta</label>
+            <span asp-validation-for="RouteName" class="text-danger"></span>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="RouteOrigin" disabled class="form-control border shadow" />
+            <label asp-for="RouteOrigin" class="ms-2">Origen</label>
+            <span asp-validation-for="RouteOrigin" class="text-danger"></span>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="RouteDestination" disabled class="form-control border shadow" />
+            <label asp-for="RouteDestination" class="ms-2">Destino</label>
+            <span asp-validation-for="RouteDestination" class="text-danger"></span>
+        </div>
+
+        <div class="w-100 card border-bottom-0">
+            <div class="card-header ml-0 py-3" style="background-color: #023673">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h2 class="text-white py-2">Schedule Details</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="table" id="scheduleTable">
+            <thead>
+                <tr>
+                    <th>Departure Time</th>
+                    <th>Arrival Time</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Schedules.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <input type="hidden" disabled name="Schedules[@i].Id" value="@Model.Schedules[i].Id" />
+                            <input type="time" disabled name="Schedules[@i].DepartureTime" class="form-control" value="@Model.Schedules[i].DepartureTime.ToString("HH:mm")" />
+                        </td>
+                        <td>
+                            <input type="time" disabled name="Schedules[@i].ArrivalTime" class="form-control" value="@Model.Schedules[i].ArrivalTime.ToString("HH:mm")" />
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+        <div class="row pt-2">
+            <div class="col-7 col-md-4">
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash-fill"></i> Delete
+                </button>
+                <a class="btn btn-primary" asp-controller="Route" asp-action="Index"> <i class="bi bi-x-circle"></i> Cancel</a>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+
+    }
+}

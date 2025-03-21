@@ -1,13 +1,18 @@
-﻿using BusRouteControl.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BusRouteControl.Web.Models
 {
     public class BusRouteScheduleViewModel
     {
         public int BusRouteId { get; set; }
-        public string RouteName { get; set; }
-        public string RouteOrigin { get; set; }
-        public string RouteDestination { get; set; }
-        public List<Schedule> Schedules { get; set; }
+        [MaxLength(50)]
+        public required string RouteName { get; set; }
+        [MaxLength(50)]
+        public required string RouteOrigin { get; set; }
+        [MaxLength(50)]
+        public required string RouteDestination { get; set; }
+        public required List<ScheduleViewModel> Schedules { get; set; }
     }
+
 }
+
