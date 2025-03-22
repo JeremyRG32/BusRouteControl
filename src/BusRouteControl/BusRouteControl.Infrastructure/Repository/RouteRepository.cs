@@ -1,39 +1,26 @@
 ﻿using BusRouteControl.Application.Common.Interfaces;
 using BusRouteControl.Domain.Entities;
-using System.Linq.Expressions;
+using BusRouteControl.Infrastructure.Data;
 
 namespace BusRouteControl.Infrastructure.Repository
 {
-    public class RouteRepository : IRouteRepository
+    public class RouteRepository : Repository<BusRoute>, IRouteRepository
     {
-        public void Add(BusRoute busRoute)
-        {
-            throw new NotImplementedException();
-        }
+        private readonly BusRouteControlDbContext _context;
 
-        public IEnumerable<BusRoute> Get(Expression<Func<BusRoute, bool>>? filter, string? includeProperties = null)
+        public RouteRepository(BusRouteControlDbContext context) : base(context)
         {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<BusRoute> GetAll(Expression<Func<BusRoute, bool>>? filter = null, string? includeProperties = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(BusRoute busRoute)
-        {
-            throw new NotImplementedException();
+            _context = context;
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            _context.SaveChanges();
         }
 
         public void Update(BusRoute busRoute)
         {
-            throw new NotImplementedException();
+            _context.Update(busRoute);
         }
     }
 }
