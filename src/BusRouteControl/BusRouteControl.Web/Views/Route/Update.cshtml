@@ -14,18 +14,22 @@
     <form method="post" class="row">
 
         <div class="form-floating py-0 col-12">
+            <input asp-for="BusRouteId" hidden class="form-control border shadow" />
+            <label asp-for="BusRouteId" class="ms-2"></label>
+        </div>
+        <div class="form-floating py-0 col-12">
             <input asp-for="RouteName" class="form-control border shadow" />
-            <label asp-for="RouteName" class="ms-2">Nombre de la Ruta</label>
+            <label asp-for="RouteName" class="ms-2">Route Name</label>
             <span asp-validation-for="RouteName" class="text-danger"></span>
         </div>
         <div class="form-floating py-0 col-12">
             <input asp-for="RouteOrigin" class="form-control border shadow" />
-            <label asp-for="RouteOrigin" class="ms-2">Origen</label>
+            <label asp-for="RouteOrigin" class="ms-2">Origin</label>
             <span asp-validation-for="RouteOrigin" class="text-danger"></span>
         </div>
         <div class="form-floating py-0 col-12">
             <input asp-for="RouteDestination" class="form-control border shadow" />
-            <label asp-for="RouteDestination" class="ms-2">Destino</label>
+            <label asp-for="RouteDestination" class="ms-2">Destination</label>
             <span asp-validation-for="RouteDestination" class="text-danger"></span>
         </div>
 
@@ -85,7 +89,52 @@
         </div>
     </form>
 </div>
+@* @section Scripts {
+    <script>
+        document.getElementById("addSchedule").addEventListener("click", function () {
+            var table = document.getElementById("scheduleTable").getElementsByTagName('tbody')[0];
+            var rowCount = table.rows.length;
 
+            var newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td>
+                    <input type="hidden" name="Schedules[${rowCount}].Id" value="0" />
+                    <input type="time" name="Schedules[${rowCount}].DepartureTime" class="form-control" />
+                </td>
+                <td>
+                    <input type="time" name="Schedules[${rowCount}].ArrivalTime" class="form-control" />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger remove-schedule">
+                        <i class="bi bi-trash-fill" style="color:white"></i> Remove
+                    </button>
+                </td>
+            `;
+        });
+
+        document.addEventListener("click", function (event) {
+            if (event.target.classList.contains("remove-schedule")) {
+                var row = event.target.closest("tr");
+                row.remove();
+            }
+        });
+
+        function prepareSchedulesForSubmit() {
+            var schedules = document.querySelectorAll("input[name^='Schedules']");
+            var removedSchedules = [];
+
+            
+            schedules.forEach(function(input) {
+                if (input.value == "0") {  
+                    removedSchedules.push(input.closest('tr').querySelector('input[name$=".Id"]').value);
+                }
+            });
+
+        }
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}
+ *@
 @section Scripts {
     @{
         <script>
@@ -103,7 +152,7 @@
                                 <input type="time" name="Schedules[${rowCount}].ArrivalTime" class="form-control" />
                             </td>
                             <td>
-                                <button type="button" class="btn btn-danger remove-schedule">Remove</button>
+                                <button type="button" class="btn btn-danger remove-schedule"><i class="bi bi-trash-fill" style="color:white"></i>Remove</button>
                             </td>
                         `;
                     });

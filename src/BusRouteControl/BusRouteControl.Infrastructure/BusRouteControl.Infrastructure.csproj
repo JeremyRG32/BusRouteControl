@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BusRouteControl.Domain\BusRouteControl.Domain.csproj" />
+    <ProjectReference Include="..\BusRouteControl.Application\BusRouteControl.Application.csproj" />
   </ItemGroup>
 
 </Project>
