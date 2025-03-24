@@ -1,4 +1,4 @@
-@BusRouteControl.API_HostAddress = http://localhost:5006
+@BusRouteControl.API_HostAddress = http://localhost:5167
 
 GET {{BusRouteControl.API_HostAddress}}/weatherforecast/
 Accept: application/json
