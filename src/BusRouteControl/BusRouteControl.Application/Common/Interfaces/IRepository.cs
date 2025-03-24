@@ -8,5 +8,10 @@ namespace BusRouteControl.Application.Common.Interfaces
         IQueryable<T> Get(Expression<Func<T, bool>>? filter, string? includeProperties = null);
         void Add(T busRoute);
         void Remove(T busRoute);
+        Task AddAsync(T entity);
+        Task<IQueryable<T>> GetAllAsync();
+        Task<T> GetByIdAsync(int id);
+        Task UpdateAsync(T entity);
+        Task DeleteAsync(int id);
     }
 }

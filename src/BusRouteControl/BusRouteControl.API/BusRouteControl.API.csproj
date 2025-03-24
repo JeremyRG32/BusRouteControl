@@ -10,4 +10,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BusRouteControl.Application\BusRouteControl.Application.csproj" />
+    <ProjectReference Include="..\BusRouteControl.Infrastructure\BusRouteControl.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
