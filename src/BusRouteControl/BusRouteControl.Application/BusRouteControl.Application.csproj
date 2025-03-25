@@ -14,4 +14,8 @@
     <ProjectReference Include="..\BusRouteControl.Domain\BusRouteControl.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Interfaces\" />
+  </ItemGroup>
+
 </Project>
