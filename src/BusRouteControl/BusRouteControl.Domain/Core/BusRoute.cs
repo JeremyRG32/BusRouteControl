@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BusRouteControl.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
-namespace BusRouteControl.Domain.Entities;
+namespace BusRouteControl.Domain.Core;
 
 public partial class BusRoute
 {

@@ -1,4 +1,6 @@
-﻿namespace BusRouteControl.Domain.Entities;
+﻿using BusRouteControl.Domain.Core;
+
+namespace BusRouteControl.Domain.Entities;
 
 public partial class Schedule
 {

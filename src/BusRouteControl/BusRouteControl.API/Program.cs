@@ -1,7 +1,7 @@
 using BusRouteControl.Application.Common.Interfaces;
 using BusRouteControl.Application.Services;
 using BusRouteControl.Application.Services.BusRouteControl.Application.Services;
-using BusRouteControl.Infrastructure.Data;
+using BusRouteControl.Infrastructure.Context;
 using BusRouteControl.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 

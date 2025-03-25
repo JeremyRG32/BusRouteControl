@@ -1,15 +1,13 @@
-﻿using BusRouteControl.Domain.Entities;
+﻿using BusRouteControl.Domain.Core;
+using BusRouteControl.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace BusRouteControl.Infrastructure.Data;
+namespace BusRouteControl.Infrastructure.Context;
 
 public partial class BusRouteControlDbContext : DbContext
 {
     private readonly IConfiguration _configuration;
-    //public BusRouteControlDbContext()
-    //{
-    //}
 
     public BusRouteControlDbContext(DbContextOptions<BusRouteControlDbContext> options, IConfiguration configuration)
         : base(options)
@@ -33,7 +31,6 @@ public partial class BusRouteControlDbContext : DbContext
             optionsBuilder.UseSqlServer(connectionString);
         }
     }
-    //=> optionsBuilder.UseSqlServer("StrConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

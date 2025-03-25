@@ -1,5 +1,6 @@
-﻿using BusRouteControl.Application.Common.Interfaces;
+﻿using BusRouteControl.Domain.Core;
 using BusRouteControl.Domain.Entities;
+using BusRouteControl.Infrastructure.Context;
 using BusRouteControl.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,15 +9,15 @@ namespace BusRouteControl.Web.Controllers
 {
     public class RouteController : Controller
     {
-        private readonly IRouteRepository _routeRepository;
+        private readonly BusRouteControlDbContext _context;
 
-        public RouteController(IRouteRepository routeRepository)
+        public RouteController(BusRouteControlDbContext context)
         {
-            _routeRepository = routeRepository;
+            _context = context;
         }
         public IActionResult Index()
         {
-            var BusRouteSchedule = _routeRepository.GetAll()
+            var BusRouteSchedule = _context.BusRoutes
         .Include(r => r.Schedules)
         .Select(r => new BusRouteScheduleViewModel
         {
@@ -63,8 +64,8 @@ namespace BusRouteControl.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                _routeRepository.Add(busroute);
-                _routeRepository.Save();
+                _context.Add(busroute);
+                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -74,10 +75,9 @@ namespace BusRouteControl.Web.Controllers
         [HttpGet]
         public IActionResult Update(int routeid)
         {
-            var busRoute = _routeRepository.Get(
-                                filter: r => r.Id == routeid,
-                                includeProperties: "Schedules")
-                            .FirstOrDefault();
+            var busRoute = _context.BusRoutes
+            .Include(r => r.Schedules)
+            .FirstOrDefault(r => r.Id == routeid);
 
             if (busRoute == null)
             {
@@ -107,10 +107,9 @@ namespace BusRouteControl.Web.Controllers
             {
                 return View(obj);
             }
-            var busRoute = _routeRepository.Get(
-                                filter: br => br.Id == obj.BusRouteId,
-                                includeProperties: "Schedules")
-                            .FirstOrDefault();
+            var busRoute = _context.BusRoutes
+            .Include(r => r.Schedules)
+            .FirstOrDefault(r => r.Id == obj.BusRouteId);
 
             if (busRoute == null)
             {
@@ -133,7 +132,7 @@ namespace BusRouteControl.Web.Controllers
                 });
             }
 
-            _routeRepository.Save();
+            _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -141,10 +140,10 @@ namespace BusRouteControl.Web.Controllers
 
         public IActionResult Delete(int routeid)
         {
-            var busRoute = _routeRepository.Get(
-                                filter: br => br.Id == routeid,
-                                includeProperties: "Schedules")
-                            .FirstOrDefault();
+            var busRoute = _context.BusRoutes
+             .Include(r => r.Schedules)
+             .FirstOrDefault(r => r.Id == routeid);
+
             if (busRoute == null)
             {
                 return NotFound();
@@ -168,25 +167,19 @@ namespace BusRouteControl.Web.Controllers
         [HttpPost]
         public IActionResult Delete(BusRouteScheduleViewModel obj)
         {
-            var busRoute = _routeRepository.Get(
-                                filter: br => br.Id == obj.BusRouteId,
-                                includeProperties: "Schedules")
-                            .FirstOrDefault();
+            var busRoute = _context.BusRoutes
+            .Include(r => r.Schedules)
+            .FirstOrDefault(r => r.Id == obj.BusRouteId);
+
             if (busRoute == null)
             {
                 return NotFound();
             }
-            _routeRepository.Remove(busRoute);
-            _routeRepository.Save();
+            _context.Remove(busRoute);
+            _context.SaveChanges();
             TempData["success"] = "The Route has been deleted succesfully.";
             return RedirectToAction("Index");
         }
-
-
-
-
-
-
     }
 
 }
