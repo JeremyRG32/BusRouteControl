@@ -74,8 +74,29 @@ namespace BusRouteControl.Web.Controllers
 
             return NotFound();
         }
+        public async Task<IActionResult> Update(int id)
+        {
+            var response = await _httpClient.GetAsync($"https://localhost:7192/BusRoute/Get/{id}");
+            if (!response.IsSuccessStatusCode) return NotFound();
 
+            var json = await response.Content.ReadAsStringAsync();
+            var busRoute = JsonConvert.DeserializeObject<BusRouteScheduleViewModel>(json);
+            return View(busRoute);
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateConfirm(BusRouteScheduleViewModel model)
+        {
+            var json = JsonConvert.SerializeObject(model);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync($"https://localhost:7192/BusRoute/Update/{model.Id}", content);
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+            return NotFound();
+        }
         //        if (ModelState.IsValid)
         //        {
         //            _context.Add(busroute);

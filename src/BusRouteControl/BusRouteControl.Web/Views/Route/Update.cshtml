@@ -11,7 +11,7 @@
 </div>
 
 <div class="card-body border p-4">
-    <form method="post" class="row">
+    <form method="post" asp-action="UpdateConfirm" asp-route-id="@Model.Id" class="row">
 
         <div class="form-floating py-0 col-12">
             <input asp-for="Id" hidden class="form-control border shadow" />
@@ -57,10 +57,10 @@
                     <tr>
                         <td>
                             <input type="hidden" name="Schedules[@i].Id" value="@Model.Schedules[i].Id" />
-                            <input type="time" name="Schedules[@i].DepartureTime" class="form-control" value="@Model.Schedules[i].DepartureTime/* .ToString("HH:mm") */" />
+                            <input type="time" name="Schedules[@i].DepartureTime" class="form-control" value="@Model.Schedules[i].DepartureTime"/>
                         </td>
                         <td>
-                            <input type="time" name="Schedules[@i].ArrivalTime" class="form-control" value="@Model.Schedules[i].ArrivalTime./* ToString("HH:mm")" */ />
+                            <input type="time" name="Schedules[@i].ArrivalTime" class="form-control" value="@Model.Schedules[i].ArrivalTime" />
                         </td>
                         <td>
                             <button type="button" class="btn btn-danger remove-schedule">
