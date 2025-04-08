@@ -31,6 +31,7 @@ namespace BusRouteControl.API.Controllers
                 Name = r.Name,
                 Origin = r.Origin,
                 Destination = r.Destination,
+                DefaultPrice = r.DefaultPrice,
                 Schedules = r.Schedules.Select(s => new ScheduleDto
                 {
                     Id = s.Id,
@@ -60,7 +61,8 @@ namespace BusRouteControl.API.Controllers
             {
                 Name = dto.Name,
                 Origin = dto.Origin,
-                Destination = dto.Destination
+                Destination = dto.Destination,
+                DefaultPrice = dto.DefaultPrice,
             };
 
             foreach (var s in dto.Schedules)
@@ -97,6 +99,7 @@ namespace BusRouteControl.API.Controllers
             route.Name = dto.Name;
             route.Origin = dto.Origin;
             route.Destination = dto.Destination;
+            route.DefaultPrice = dto.DefaultPrice;
 
             _context.Schedules.RemoveRange(route.Schedules);
 
@@ -135,6 +138,7 @@ namespace BusRouteControl.API.Controllers
                 Name = route.Name,
                 Origin = route.Origin,
                 Destination = route.Destination,
+                DefaultPrice = route.DefaultPrice,
                 Schedules = route.Schedules.Select(s => new ScheduleDto
                 {
                     Id = s.Id,

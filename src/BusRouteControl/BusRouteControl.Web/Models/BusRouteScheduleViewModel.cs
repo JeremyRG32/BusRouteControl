@@ -11,6 +11,7 @@ namespace BusRouteControl.Web.Models
         public required string Origin { get; set; }
         [MaxLength(50)]
         public required string Destination { get; set; }
+        public decimal DefaultPrice { get; set; }
         public required List<ScheduleViewModel> Schedules { get; set; }
     }
 

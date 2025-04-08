@@ -18,18 +18,23 @@
         </div>
         <div class="form-floating py-0 col-12">
             <input asp-for="Name" disabled class="form-control border shadow" />
-            <label asp-for="Name" class="ms-2">Nombre de la Ruta</label>
+            <label asp-for="Name" class="ms-2">Route Name</label>
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="form-floating py-0 col-12">
             <input asp-for="Origin" disabled class="form-control border shadow" />
-            <label asp-for="Origin" class="ms-2">Origen</label>
+            <label asp-for="Origin" class="ms-2">Origin</label>
             <span asp-validation-for="Origin" class="text-danger"></span>
         </div>
         <div class="form-floating py-0 col-12">
             <input asp-for="Destination" disabled class="form-control border shadow" />
-            <label asp-for="Destination" class="ms-2">Destino</label>
+            <label asp-for="Destination" class="ms-2">Destination</label>
             <span asp-validation-for="Destination" class="text-danger"></span>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="DefaultPrice" disabled class="form-control border shadow" />
+            <label asp-for="DefaultPrice" class="ms-2">Price</label>
+            <span asp-validation-for="DefaultPrice" class="text-danger"></span>
         </div>
 
         <div class="w-100 card border-bottom-0">

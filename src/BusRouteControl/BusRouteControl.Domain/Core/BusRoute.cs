@@ -13,5 +13,7 @@ public partial class BusRoute
     [MaxLength(50)]
     public string Destination { get; set; } = null!;
 
+    public decimal DefaultPrice { get; set; }
+
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 }

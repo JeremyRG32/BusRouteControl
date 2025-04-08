@@ -14,53 +14,47 @@
     </div>
 </div>
 
-<div class="card-body border p-3" style="background-color: #023673">
-        <div class="row pb-0">
-            <div class="col-6 offset-6 text-end" >
-                <a asp-controller="Route" asp-action="Create" class="btn btn-light"> <i class="bi bi-plus-circle"></i> Create New Route </a>
-            </div>
-        </div>
-    </div>
-
 <table class="table table-bordered" style="background-color: dimgray">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Origin</th>
-                <th>Destination</th>
-                <th>Departure Time</th>
-                <th>Arrival Time</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var r in Model)
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Price</th>
+            <th>Departure Time</th>
+            <th>Arrival Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            @foreach (var schedule in r.Schedules)
             {
-
-                @foreach (var schedule in r.Schedules)
-                {
-                    <tr>
-                        @if (schedule.Equals(r.Schedules.First()))
-                        {
-                        <td rowspan="@r.Schedules.Count">@r.Name
-                            <br/> <div class="w-30 btn-group" role="group">
+                <tr>
+                    @if (schedule.Equals(r.Schedules.First()))
+                    {
+                        <td rowspan="@r.Schedules.Count">
+                            @r.Name
+                            <br />
+                            <div class="w-30 btn-group" role="group">
                                 <a asp-controller="Route" asp-action="Update" asp-route-id="@r.Id"
                                    class="btn btn-success mx-0">
-                                    <i i class="bi bi-pencil-square"> Edit</i>
+                                    <i class="bi bi-pencil-square"> Edit</i>
                                 </a>
-                                <a asp-controller="Route" asp-action="Delete" asp-route-id="@r.Id "
+                                <a asp-controller="Route" asp-action="Delete" asp-route-id="@r.Id"
                                    class="btn btn-danger mx-0">
-                                    <i i class="bi bi-trash-fill"> Delete</i>
+                                    <i class="bi bi-trash-fill"> Delete</i>
                                 </a>
                             </div>
                         </td>
-                            <td rowspan="@r.Schedules.Count">@r.Origin</td>
-                            <td rowspan="@r.Schedules.Count">@r.Destination</td>                            
-                        }
-                        <td>@schedule.DepartureTime</td>
-                        <td>@schedule.ArrivalTime</td>
-                   
-                    </tr>
-                }
+                        <td rowspan="@r.Schedules.Count">@r.Origin</td>
+                        <td rowspan="@r.Schedules.Count">@r.Destination</td>
+                        <td rowspan="@r.Schedules.Count">@r.DefaultPrice</td> <!-- Added Price -->
+                    }
+                    <td>@schedule.DepartureTime</td>
+                    <td>@schedule.ArrivalTime</td>
+                </tr>
             }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>

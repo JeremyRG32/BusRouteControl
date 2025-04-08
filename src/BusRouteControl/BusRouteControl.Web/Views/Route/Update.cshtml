@@ -32,7 +32,11 @@
             <label asp-for="Destination" class="ms-2">Destination</label>
             <span asp-validation-for="Destination" class="text-danger"></span>
         </div>
-
+        <div class="form-floating py-0 col-12">
+            <input asp-for="DefaultPrice" class="form-control border shadow" />
+            <label asp-for="DefaultPrice" class="ms-2">Price</label>
+            <span asp-validation-for="DefaultPrice" class="text-danger"></span>
+        </div>
         <div class="w-100 card border-bottom-0">
             <div class="card-header ml-0 py-3" style="background-color: #023673">
                 <div class="row">
