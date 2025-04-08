@@ -11,26 +11,25 @@
 </div>
 
 <div class="card-body border p-4">
-    <form method="post" class="row">
+    <form asp-action="DeleteConfirm" asp-route-id="@Model.Id" method="post" class="row">
 
         <div class="form-floating py-0 col-12">
-            <input asp-for="BusRouteId" hidden class="form-control border shadow" />
-            <label asp-for="BusRouteId" class="ms-2">Nombre de la Ruta</label>
+            <input type="hidden" asp-for="Id" />
         </div>
         <div class="form-floating py-0 col-12">
-            <input asp-for="RouteName" disabled class="form-control border shadow" />
-            <label asp-for="RouteName" class="ms-2">Nombre de la Ruta</label>
-            <span asp-validation-for="RouteName" class="text-danger"></span>
+            <input asp-for="Name" disabled class="form-control border shadow" />
+            <label asp-for="Name" class="ms-2">Nombre de la Ruta</label>
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="form-floating py-0 col-12">
-            <input asp-for="RouteOrigin" disabled class="form-control border shadow" />
-            <label asp-for="RouteOrigin" class="ms-2">Origen</label>
-            <span asp-validation-for="RouteOrigin" class="text-danger"></span>
+            <input asp-for="Origin" disabled class="form-control border shadow" />
+            <label asp-for="Origin" class="ms-2">Origen</label>
+            <span asp-validation-for="Origin" class="text-danger"></span>
         </div>
         <div class="form-floating py-0 col-12">
-            <input asp-for="RouteDestination" disabled class="form-control border shadow" />
-            <label asp-for="RouteDestination" class="ms-2">Destino</label>
-            <span asp-validation-for="RouteDestination" class="text-danger"></span>
+            <input asp-for="Destination" disabled class="form-control border shadow" />
+            <label asp-for="Destination" class="ms-2">Destino</label>
+            <span asp-validation-for="Destination" class="text-danger"></span>
         </div>
 
         <div class="w-100 card border-bottom-0">
@@ -57,10 +56,10 @@
                     <tr>
                         <td>
                             <input type="hidden" disabled name="Schedules[@i].Id" value="@Model.Schedules[i].Id" />
-                            <input type="time" disabled name="Schedules[@i].DepartureTime" class="form-control" value="@Model.Schedules[i].DepartureTime.ToString("HH:mm")" />
+                            <input type="time" disabled name="Schedules[@i].DepartureTime" class="form-control" value="@Model.Schedules[i].DepartureTime" />
                         </td>
                         <td>
-                            <input type="time" disabled name="Schedules[@i].ArrivalTime" class="form-control" value="@Model.Schedules[i].ArrivalTime.ToString("HH:mm")" />
+                            <input type="time" disabled name="Schedules[@i].ArrivalTime" class="form-control" value="@Model.Schedules[i].ArrivalTime" />
                         </td>
                         <td>
                         </td>

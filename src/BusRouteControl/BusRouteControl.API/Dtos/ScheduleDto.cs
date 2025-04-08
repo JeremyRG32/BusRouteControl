@@ -1,6 +1,6 @@
-﻿namespace BusRouteControl.Web.Models
+﻿namespace BusRouteControl.API.Dtos
 {
-    public class ScheduleViewModel
+    public class ScheduleDto
     {
         public int Id { get; set; }
         public string DepartureTime { get; set; } = null!;

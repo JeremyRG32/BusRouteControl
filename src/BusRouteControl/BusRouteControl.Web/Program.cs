@@ -1,3 +1,4 @@
+using BusRouteControl.API.Controllers;
 using BusRouteControl.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<BusRouteControlDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("StrConnection")));
+builder.Services.AddHttpClient<BusRouteController>();
 
 var app = builder.Build();
 

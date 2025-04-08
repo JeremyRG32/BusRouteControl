@@ -1,185 +1,175 @@
-﻿using BusRouteControl.Domain.Core;
-using BusRouteControl.Domain.Entities;
-using BusRouteControl.Infrastructure.Context;
-using BusRouteControl.Web.Models;
+﻿using BusRouteControl.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace BusRouteControl.Web.Controllers
 {
     public class RouteController : Controller
     {
-        private readonly BusRouteControlDbContext _context;
+        private readonly HttpClient _httpClient;
 
-        public RouteController(BusRouteControlDbContext context)
+        public RouteController(HttpClient httpClient)
         {
-            _context = context;
+            _httpClient = httpClient;
         }
-        public IActionResult Index()
+
+        public async Task<IActionResult> Index()
         {
-            var BusRouteSchedule = _context.BusRoutes
-        .Include(r => r.Schedules)
-        .Select(r => new BusRouteScheduleViewModel
-        {
-            BusRouteId = r.Id,
-            RouteName = r.Name,
-            RouteOrigin = r.Origin,
-            RouteDestination = r.Destination,
-            Schedules = r.Schedules.Select(s => new ScheduleViewModel
+            var response = await _httpClient.GetAsync("https://localhost:7192/BusRoute/GetAll");
+            if (response.IsSuccessStatusCode)
             {
-                DepartureTime = s.DepartureTime,
-                ArrivalTime = s.ArrivalTime
-            }).ToList()
-        }).ToList();
+                var json = await response.Content.ReadAsStringAsync();
+                var busRoutes = JsonConvert.DeserializeObject<List<BusRouteScheduleViewModel>>(json);
+                return View(busRoutes);
+            }
 
-            return View(BusRouteSchedule);
+            return View(new List<BusRouteScheduleViewModel>());
         }
+
         public IActionResult Create()
         {
-            var viewModel = new BusRouteScheduleViewModel
+            var busRoute = new BusRouteScheduleViewModel
             {
-                RouteName = "",
-                RouteOrigin = "",
-                RouteDestination = "",
+                Id = 0,
+                Name = "",
+                Destination = "",
+                Origin = "",
                 Schedules = new List<ScheduleViewModel> { new ScheduleViewModel() }
             };
-            return View(viewModel);
+            return View(busRoute);
         }
 
         [HttpPost]
-        public IActionResult Create(BusRouteScheduleViewModel obj)
-        {
-            BusRoute busroute = new BusRoute
-            {
-                Name = obj.RouteName,
-                Origin = obj.RouteOrigin,
-                Destination = obj.RouteDestination
-            };
-            busroute.Schedules = obj.Schedules.Select(s => new Schedule
-            {
-                DepartureTime = s.DepartureTime,
-                ArrivalTime = s.ArrivalTime,
-                Route = busroute
-            }).ToList();
-
-            if (ModelState.IsValid)
-            {
-                _context.Add(busroute);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(obj);
-
-        }
-        [HttpGet]
-        public IActionResult Update(int routeid)
-        {
-            var busRoute = _context.BusRoutes
-            .Include(r => r.Schedules)
-            .FirstOrDefault(r => r.Id == routeid);
-
-            if (busRoute == null)
-            {
-                return NotFound();
-            }
-            var viewModel = new BusRouteScheduleViewModel
-            {
-                BusRouteId = busRoute.Id,
-                RouteName = busRoute.Name,
-                RouteOrigin = busRoute.Origin,
-                RouteDestination = busRoute.Destination,
-                Schedules = busRoute.Schedules.Select(s => new ScheduleViewModel
-                {
-                    Id = s.Id,
-                    DepartureTime = s.DepartureTime,
-                    ArrivalTime = s.ArrivalTime
-                }).ToList()
-            };
-
-            return View(viewModel);
-        }
-
-
-        public IActionResult Update(BusRouteScheduleViewModel obj)
+        public async Task<IActionResult> Create(BusRouteScheduleViewModel model)
         {
             if (!ModelState.IsValid)
-            {
-                return View(obj);
-            }
-            var busRoute = _context.BusRoutes
-            .Include(r => r.Schedules)
-            .FirstOrDefault(r => r.Id == obj.BusRouteId);
+                return View(model);
 
-            if (busRoute == null)
-            {
-                return NotFound();
-            }
+            var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("https://localhost:7192/BusRoute/Create", content);
 
-            busRoute.Name = obj.RouteName;
-            busRoute.Origin = obj.RouteOrigin;
-            busRoute.Destination = obj.RouteDestination;
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
 
-            busRoute.Schedules.Clear();
-            foreach (var s in obj.Schedules)
-            {
-                busRoute.Schedules.Add(new Schedule
-                {
-                    Id = s.Id,
-                    DepartureTime = s.DepartureTime,
-                    ArrivalTime = s.ArrivalTime,
-                    Route = busRoute
-                });
-            }
-
-            _context.SaveChanges();
-
-            return RedirectToAction("Index");
+            return View(model);
         }
 
-
-        public IActionResult Delete(int routeid)
+        public async Task<IActionResult> Delete(int id)
         {
-            var busRoute = _context.BusRoutes
-             .Include(r => r.Schedules)
-             .FirstOrDefault(r => r.Id == routeid);
+            var response = await _httpClient.GetAsync($"https://localhost:7192/BusRoute/Get/{id}");
+            if (!response.IsSuccessStatusCode) return NotFound();
 
-            if (busRoute == null)
-            {
-                return NotFound();
-            }
-            var viewModel = new BusRouteScheduleViewModel
-            {
-                BusRouteId = busRoute.Id,
-                RouteName = busRoute.Name,
-                RouteOrigin = busRoute.Origin,
-                RouteDestination = busRoute.Destination,
-                Schedules = busRoute.Schedules.Select(s => new ScheduleViewModel
-                {
-                    Id = s.Id,
-                    DepartureTime = s.DepartureTime,
-                    ArrivalTime = s.ArrivalTime
-                }).ToList()
-            };
-
-            return View(viewModel);
+            var json = await response.Content.ReadAsStringAsync();
+            var busRoute = JsonConvert.DeserializeObject<BusRouteScheduleViewModel>(json);
+            return View(busRoute);
         }
+
         [HttpPost]
-        public IActionResult Delete(BusRouteScheduleViewModel obj)
+        public async Task<IActionResult> DeleteConfirm(int id)
         {
-            var busRoute = _context.BusRoutes
-            .Include(r => r.Schedules)
-            .FirstOrDefault(r => r.Id == obj.BusRouteId);
+            var response = await _httpClient.DeleteAsync($"https://localhost:7192/BusRoute/Delete/{id}");
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
 
-            if (busRoute == null)
-            {
-                return NotFound();
-            }
-            _context.Remove(busRoute);
-            _context.SaveChanges();
-            TempData["success"] = "The Route has been deleted succesfully.";
-            return RedirectToAction("Index");
+            return NotFound();
         }
-    }
 
+
+        //        if (ModelState.IsValid)
+        //        {
+        //            _context.Add(busroute);
+        //            _context.SaveChanges();
+        //            return RedirectToAction("Index");
+        //        }
+
+        //        return View(obj);
+
+        //    }
+        //    [HttpGet]
+        //    public IActionResult Update(int routeid)
+        //    {
+        //        var busRoute = _context.BusRoutes
+        //        .Include(r => r.Schedules)
+        //        .FirstOrDefault(r => r.Id == routeid);
+
+        //        if (busRoute == null)
+        //        {
+        //            return NotFound();
+        //        }
+        //        var viewModel = new BusRouteScheduleViewModel
+        //        {
+        //            BusRouteId = busRoute.Id,
+        //            RouteName = busRoute.Name,
+        //            RouteOrigin = busRoute.Origin,
+        //            RouteDestination = busRoute.Destination,
+        //            Schedules = busRoute.Schedules.Select(s => new ScheduleViewModel
+        //            {
+        //                Id = s.Id,
+        //                DepartureTime = s.DepartureTime,
+        //                ArrivalTime = s.ArrivalTime
+        //            }).ToList()
+        //        };
+
+        //        return View(viewModel);
+        //    }
+
+
+        //    public IActionResult Update(BusRouteScheduleViewModel obj)
+        //    {
+        //        if (!ModelState.IsValid)
+        //        {
+        //            return View(obj);
+        //        }
+        //        var busRoute = _context.BusRoutes
+        //        .Include(r => r.Schedules)
+        //        .FirstOrDefault(r => r.Id == obj.BusRouteId);
+
+        //        if (busRoute == null)
+        //        {
+        //            return NotFound();
+        //        }
+
+        //        busRoute.Name = obj.RouteName;
+        //        busRoute.Origin = obj.RouteOrigin;
+        //        busRoute.Destination = obj.RouteDestination;
+
+        //        busRoute.Schedules.Clear();
+        //        foreach (var s in obj.Schedules)
+        //        {
+        //            busRoute.Schedules.Add(new Schedule
+        //            {
+        //                Id = s.Id,
+        //                DepartureTime = s.DepartureTime,
+        //                ArrivalTime = s.ArrivalTime,
+        //                Route = busRoute
+        //            });
+        //        }
+
+        //        _context.SaveChanges();
+
+        //        return RedirectToAction("Index");
+        //    }
+
+
+
+        //    [HttpPost]
+        //    public IActionResult Delete(BusRouteScheduleViewModel obj)
+        //    {
+        //        var busRoute = _context.BusRoutes
+        //        .Include(r => r.Schedules)
+        //        .FirstOrDefault(r => r.Id == obj.BusRouteId);
+
+        //        if (busRoute == null)
+        //        {
+        //            return NotFound();
+        //        }
+        //        _context.Remove(busRoute);
+        //        _context.SaveChanges();
+        //        TempData["success"] = "The Route has been deleted succesfully.";
+        //        return RedirectToAction("Index");
+        //    }
+        //}
+
+    }
 }

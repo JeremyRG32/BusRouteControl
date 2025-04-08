@@ -41,20 +41,20 @@
                     <tr>
                         @if (schedule.Equals(r.Schedules.First()))
                         {
-                        <td rowspan="@r.Schedules.Count">@r.RouteName
+                        <td rowspan="@r.Schedules.Count">@r.Name
                             <br/> <div class="w-30 btn-group" role="group">
-                                <a asp-action="Update" asp-route-routeid="@r.BusRouteId"
+                                <a asp-controller="Route" asp-action="Update" asp-route-id="@r.Id"
                                    class="btn btn-success mx-0">
                                     <i i class="bi bi-pencil-square"> Edit</i>
                                 </a>
-                                <a asp-action="Delete" asp-route-routeid="@r.BusRouteId"
+                                <a asp-controller="Route" asp-action="Delete" asp-route-id="@r.Id "
                                    class="btn btn-danger mx-0">
                                     <i i class="bi bi-trash-fill"> Delete</i>
                                 </a>
                             </div>
                         </td>
-                            <td rowspan="@r.Schedules.Count">@r.RouteOrigin</td>
-                            <td rowspan="@r.Schedules.Count">@r.RouteDestination</td>                            
+                            <td rowspan="@r.Schedules.Count">@r.Origin</td>
+                            <td rowspan="@r.Schedules.Count">@r.Destination</td>                            
                         }
                         <td>@schedule.DepartureTime</td>
                         <td>@schedule.ArrivalTime</td>

@@ -4,13 +4,13 @@ namespace BusRouteControl.Web.Models
 {
     public class BusRouteScheduleViewModel
     {
-        public int BusRouteId { get; set; }
+        public int Id { get; set; }
         [MaxLength(50)]
-        public required string RouteName { get; set; }
+        public required string Name { get; set; }
         [MaxLength(50)]
-        public required string RouteOrigin { get; set; }
+        public required string Origin { get; set; }
         [MaxLength(50)]
-        public required string RouteDestination { get; set; }
+        public required string Destination { get; set; }
         public required List<ScheduleViewModel> Schedules { get; set; }
     }
 
