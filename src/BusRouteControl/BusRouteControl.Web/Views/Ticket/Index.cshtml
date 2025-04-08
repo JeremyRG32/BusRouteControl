@@ -1,3 +1,30 @@
 ﻿@model IEnumerable<TicketViewModel>
 
-
+<div class="container">
+    <h2 class="my-4">Tickets</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Ticket ID</th>
+                <th>User Name</th>
+                <th>Schedule Departure</th>
+                <th>Schedule Arrival</th>
+                <th>Price</th>
+                <th>Booking Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ticket in Model)
+            {
+                <tr>
+                    <td>@ticket.Id</td>
+                    <td>@ticket.UserName</td>
+                    <td>@ticket.DepartureTime?</td>
+                    <td>@ticket.ArrivalTime</td>
+                    <td>@ticket.Price.ToString("C")</td>
+                    <td>@ticket.BookingDate?.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
