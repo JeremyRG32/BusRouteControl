@@ -1,9 +1,7 @@
 using BusRouteControl.API.Dtos;
-using BusRouteControl.Domain.Core;
-using BusRouteControl.Domain.Entities;
-using BusRouteControl.Infrastructure.Context;
+using BusRouteControl.Infrastructure.Models;
+using BusRouteControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusRouteControl.API.Controllers
 {
@@ -11,141 +9,82 @@ namespace BusRouteControl.API.Controllers
     [Route("[controller]")]
     public class BusRouteController : ControllerBase
     {
-        private readonly BusRouteControlDbContext _context;
+        private readonly BusRouteRepository _busRouteRepository;
 
-        public BusRouteController(BusRouteControlDbContext context)
+        public BusRouteController(BusRouteRepository busRouteRepository)
         {
-            _context = context;
+            _busRouteRepository = busRouteRepository;
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<BusRouteDto>>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var routes = await _context.BusRoutes
-                .Include(r => r.Schedules)
-                .ToListAsync();
-
-            var routeDtos = routes.Select(r => new BusRouteDto
-            {
-                Id = r.Id,
-                Name = r.Name,
-                Origin = r.Origin,
-                Destination = r.Destination,
-                DefaultPrice = r.DefaultPrice,
-                Schedules = r.Schedules.Select(s => new ScheduleDto
-                {
-                    Id = s.Id,
-                    DepartureTime = s.DepartureTime.ToString("HH:mm"),
-                    ArrivalTime = s.ArrivalTime.ToString("HH:mm")
-                }).ToList()
-            });
-            return Ok(routeDtos);
+            return Ok(await _busRouteRepository.GetAll());
         }
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<BusRouteDto>> GetBusRoute(int id)
+        public async Task<IActionResult> GetBusRoute(int id)
         {
-            var route = await _context.BusRoutes.Include(r => r.Schedules).FirstOrDefaultAsync(r => r.Id == id);
-
-            if (route == null)
-                return NotFound();
-
-            return Ok(MapToDto(route));
+            return Ok(await _busRouteRepository.GetBusRouteById(id));
         }
         [HttpPost("Create")]
-        public async Task<ActionResult<BusRouteDto>> Create([FromBody] BusRouteDto dto)
+        public async Task<IActionResult> Create([FromBody] BusRouteDto dto)
         {
-            if (dto == null)
-                return BadRequest("Invalid data.");
-
-            var busRoute = new BusRoute
+            if (!ModelState.IsValid)
             {
+                return BadRequest("The Model is Invalid.");
+            }
+            var model = new BusRouteModel
+            {
+                Id = dto.Id,
                 Name = dto.Name,
                 Origin = dto.Origin,
                 Destination = dto.Destination,
                 DefaultPrice = dto.DefaultPrice,
-            };
-
-            foreach (var s in dto.Schedules)
-            {
-                busRoute.Schedules.Add(new Schedule
+                Schedules = dto.Schedules.Select(s => new ScheduleModel
                 {
-                    DepartureTime = TimeOnly.Parse(s.DepartureTime),
-                    ArrivalTime = TimeOnly.Parse(s.ArrivalTime),
-                    Route = busRoute
-                });
-            }
-
-            _context.BusRoutes.Add(busRoute);
-            await _context.SaveChangesAsync();
-
-            dto.Id = busRoute.Id;
-            dto.Schedules = busRoute.Schedules.Select(s => new ScheduleDto
+                    DepartureTime = s.DepartureTime.ToString(),
+                    ArrivalTime = s.ArrivalTime.ToString()
+                }).ToList()
+            };
+            model = await _busRouteRepository.Create(model);
+            return Ok(new
             {
-                Id = s.Id,
-                DepartureTime = s.DepartureTime.ToString("HH:mm"),
-                ArrivalTime = s.ArrivalTime.ToString("HH:mm")
-            }).ToList();
-
-            return CreatedAtAction(nameof(GetAll), new { id = dto.Id }, dto);
+                message = "Bus route created successfully.",
+                data = model
+            });
         }
-
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> UpdateBusRoute(int id, [FromBody] BusRouteDto dto)
         {
-            var route = await _context.BusRoutes.Include(r => r.Schedules).FirstOrDefaultAsync(r => r.Id == id);
-            if (route == null)
+            var model = new BusRouteModel
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                Origin = dto.Origin,
+                Destination = dto.Destination,
+                DefaultPrice = dto.DefaultPrice,
+                Schedules = dto.Schedules.Select(s => new ScheduleModel
+                {
+                    Id = s.Id,
+                    DepartureTime = s.DepartureTime.ToString(),
+                    ArrivalTime = s.ArrivalTime.ToString()
+                }).ToList()
+            };
+            var success = await _busRouteRepository.UpdateBusRoute(id, model);
+            if (!success)
                 return NotFound();
 
-            route.Name = dto.Name;
-            route.Origin = dto.Origin;
-            route.Destination = dto.Destination;
-            route.DefaultPrice = dto.DefaultPrice;
-
-            _context.Schedules.RemoveRange(route.Schedules);
-
-            foreach (var s in dto.Schedules)
-            {
-                route.Schedules.Add(new Schedule
-                {
-                    DepartureTime = TimeOnly.Parse(s.DepartureTime),
-                    ArrivalTime = TimeOnly.Parse(s.ArrivalTime),
-                    Route = route
-                });
-            }
-
-            await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok(new { message = "Bus route updated successfully." });
         }
 
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteBusRoute(int id)
         {
-            var route = await _context.BusRoutes.Include(r => r.Schedules).FirstOrDefaultAsync(r => r.Id == id);
-            if (route == null)
+            var success = await _busRouteRepository.DeleteBusRoute(id);
+            if (!success)
                 return NotFound();
 
-            _context.Schedules.RemoveRange(route.Schedules);
-            _context.BusRoutes.Remove(route);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-        private BusRouteDto MapToDto(BusRoute route)
-        {
-            return new BusRouteDto
-            {
-                Id = route.Id,
-                Name = route.Name,
-                Origin = route.Origin,
-                Destination = route.Destination,
-                DefaultPrice = route.DefaultPrice,
-                Schedules = route.Schedules.Select(s => new ScheduleDto
-                {
-                    Id = s.Id,
-                    DepartureTime = s.DepartureTime.ToString("HH:mm"),
-                    ArrivalTime = s.ArrivalTime.ToString("HH:mm")
-                }).ToList()
-            };
+            return Ok(new { message = "Bus route deleted successfully." });
         }
     }
 }

@@ -34,6 +34,9 @@ namespace BusRouteControl.Web.Controllers
                 var scheduleResponse = await _httpClient.GetAsync($"https://localhost:7192/api/Schedule/Get/{ticketDto.ScheduleId}");
                 var scheduleDto = await scheduleResponse.Content.ReadFromJsonAsync<ScheduleDto>();
 
+                var routeResponse = await _httpClient.GetAsync($"https://localhost:7192/BusRoute/Get/{scheduleDto.RouteId}");
+                var routeDto = await routeResponse.Content.ReadFromJsonAsync<BusRouteDto>();
+
                 var ticketViewModel = new TicketViewModel
                 {
                     Id = ticketDto.Id,
@@ -41,6 +44,7 @@ namespace BusRouteControl.Web.Controllers
                     DepartureTime = scheduleDto.DepartureTime,
                     ArrivalTime = scheduleDto.ArrivalTime,
                     Price = ticketDto.Price,
+                    RouteName = routeDto.Name,
                     Status = ticketDto.Status,
                     BookingDate = ticketDto.BookingDate
                 };

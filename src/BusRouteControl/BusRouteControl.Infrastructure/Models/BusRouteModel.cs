@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BusRouteControl.Infrastructure.Models
+﻿namespace BusRouteControl.Infrastructure.Models
 {
-    internal class BusRouteModel
+    public class BusRouteModel
     {
+        public int Id { get; set; }
+        public string Name { get; set; } = null!;
+        public string Origin { get; set; } = null!;
+        public string Destination { get; set; } = null!;
+        public decimal DefaultPrice { get; set; }
+        public List<ScheduleModel> Schedules { get; set; } = new();
     }
 }

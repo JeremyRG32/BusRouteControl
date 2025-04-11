@@ -13,7 +13,13 @@
         </div>
     </div>
 </div>
-
+<div class="card-body border p-3" style="background-color: #023673">
+    <div class="row pb-0">
+        <div class="col-6 offset-6 text-end">
+            <a asp-controller="Route" asp-action="Create" class="btn btn-light"> <i class="bi bi-plus-circle"></i> Create New Route </a>
+        </div>
+    </div>
+</div>
 <table class="table table-bordered" style="background-color: dimgray">
     <thead>
         <tr>
@@ -49,7 +55,7 @@
                         </td>
                         <td rowspan="@r.Schedules.Count">@r.Origin</td>
                         <td rowspan="@r.Schedules.Count">@r.Destination</td>
-                        <td rowspan="@r.Schedules.Count">@r.DefaultPrice</td> <!-- Added Price -->
+                        <td rowspan="@r.Schedules.Count">@r.DefaultPrice</td>
                     }
                     <td>@schedule.DepartureTime</td>
                     <td>@schedule.ArrivalTime</td>

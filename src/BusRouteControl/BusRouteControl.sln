@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusRouteControl.Infrastruct
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusRouteControl.API", "BusRouteControl.API\BusRouteControl.API.csproj", "{9B90742B-FD5E-4B7B-8869-03C203BEB834}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{276C6353-E429-440F-A2E7-E4D208FBAE36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FD2701A1-26FE-4ACC-AB0F-3E29EF040366} = {276C6353-E429-440F-A2E7-E4D208FBAE36}
+		{9B90742B-FD5E-4B7B-8869-03C203BEB834} = {276C6353-E429-440F-A2E7-E4D208FBAE36}
 	EndGlobalSection
 EndGlobal

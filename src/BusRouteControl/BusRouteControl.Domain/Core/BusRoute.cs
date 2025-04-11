@@ -1,11 +1,11 @@
 ﻿using BusRouteControl.Domain.Entities;
+using BusRouteControl.Infrastructure.Core;
 using System.ComponentModel.DataAnnotations;
 
 namespace BusRouteControl.Domain.Core;
 
-public partial class BusRoute
+public partial class BusRoute : BaseEntity
 {
-    public int Id { get; set; }
     [MaxLength(50)]
     public string Name { get; set; } = null!;
     [MaxLength(50)]

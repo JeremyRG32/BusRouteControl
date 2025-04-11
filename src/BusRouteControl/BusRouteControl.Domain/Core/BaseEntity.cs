@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusRouteControl.Domain.Core
+namespace BusRouteControl.Infrastructure.Core
 {
-    internal class BaseEntity
+    public class BaseEntity
     {
+        public int Id { get; set; }
     }
 }

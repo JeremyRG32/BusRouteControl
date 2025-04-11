@@ -1,9 +1,9 @@
-﻿namespace BusRouteControl.Domain.Entities;
+﻿using BusRouteControl.Infrastructure.Core;
 
-public partial class Ticket
+namespace BusRouteControl.Domain.Entities;
+
+public partial class Ticket : BaseEntity
 {
-    public int Id { get; set; }
-
     public int UserId { get; set; }
 
     public int ScheduleId { get; set; }

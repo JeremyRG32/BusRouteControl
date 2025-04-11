@@ -1,8 +1,6 @@
-﻿using BusRouteControl.API.Dtos;
-using BusRouteControl.Domain.Entities;
-using BusRouteControl.Infrastructure.Context;
+﻿using BusRouteControl.Infrastructure.Models;
+using BusRouteControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusRouteControl.API.Controllers
 {
@@ -10,101 +8,62 @@ namespace BusRouteControl.API.Controllers
     [ApiController]
     public class ScheduleController : ControllerBase
     {
-        private readonly BusRouteControlDbContext _context;
+        private readonly ScheduleRepository _scheduleRepository;
 
-        public ScheduleController(BusRouteControlDbContext context)
+        public ScheduleController(ScheduleRepository scheduleRepository)
         {
-            _context = context;
+            _scheduleRepository = scheduleRepository;
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<ScheduleDto>>> GetSchedules()
+        public async Task<IActionResult> GetAll()
         {
-            var schedules = await _context.Schedules
-                .Select(s => new ScheduleDto
-                {
-                    Id = s.Id,
-                    RouteId = s.RouteId,
-                    DepartureTime = s.DepartureTime.ToString("HH:mm"),
-                    ArrivalTime = s.ArrivalTime.ToString("HH:mm")
-                })
-                .ToListAsync();
-
-            return Ok(schedules);
+            var result = await _scheduleRepository.GetAll();
+            return Ok(result);
         }
+
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<ScheduleDto>> GetSchedule(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var schedule = await _context.Schedules.FindAsync(id);
-
+            var schedule = await _scheduleRepository.GetEntityById(id);
             if (schedule == null)
-                return NotFound();
+                return NotFound(new { message = "Schedule not found." });
 
-            var dto = new ScheduleDto
-            {
-                Id = schedule.Id,
-                RouteId = schedule.RouteId,
-                DepartureTime = schedule.DepartureTime.ToString("HH:mm"),
-                ArrivalTime = schedule.ArrivalTime.ToString("HH:mm")
-            };
-
-            return Ok(dto);
+            return Ok(schedule);
         }
+
         [HttpPost("Create")]
-        public async Task<ActionResult<ScheduleDto>> CreateSchedule(ScheduleDto scheduleDto)
+        public async Task<IActionResult> Create([FromBody] ScheduleModel model)
         {
-            if (!TimeOnly.TryParse(scheduleDto.DepartureTime, out var departure) ||
-                !TimeOnly.TryParse(scheduleDto.ArrivalTime, out var arrival))
+            if (!ModelState.IsValid)
+                return BadRequest("The model is invalid.");
+
+            var created = await _scheduleRepository.Create(model);
+            return Ok(new
             {
-                return BadRequest("Invalid date format. Use 'HH:mm'.");
-            }
-
-            var schedule = new Schedule
-            {
-                RouteId = scheduleDto.RouteId,
-                DepartureTime = departure,
-                ArrivalTime = arrival
-            };
-
-            _context.Schedules.Add(schedule);
-            await _context.SaveChangesAsync();
-
-            scheduleDto.Id = schedule.Id;
-            return CreatedAtAction(nameof(GetSchedule), new { id = schedule.Id }, scheduleDto);
+                message = "Schedule created successfully.",
+                data = created
+            });
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> UpdateSchedule(int id, ScheduleDto scheduleDto)
+        public async Task<IActionResult> Update(int id, [FromBody] ScheduleModel model)
         {
-            var schedule = await _context.Schedules.FindAsync(id);
-            if (schedule == null)
-                return NotFound();
+            var success = await _scheduleRepository.Update(id, model);
+            if (!success)
+                return NotFound(new { message = "Schedule not found." });
 
-            if (!TimeOnly.TryParse(scheduleDto.DepartureTime, out var departure) ||
-                !TimeOnly.TryParse(scheduleDto.ArrivalTime, out var arrival))
-            {
-                return BadRequest("Invalid date format. Use 'HH:mm'.");
-            }
-
-            schedule.RouteId = scheduleDto.RouteId;
-            schedule.DepartureTime = departure;
-            schedule.ArrivalTime = arrival;
-
-            await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok(new { message = "Schedule updated successfully." });
         }
 
         [HttpDelete("Delete/{id}")]
-        public async Task<IActionResult> DeleteSchedule(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var schedule = await _context.Schedules.FindAsync(id);
-            if (schedule == null)
-                return NotFound();
+            var success = await _scheduleRepository.DeleteEntity(id);
+            if (!success)
+                return NotFound(new { message = "Schedule not found." });
 
-            _context.Schedules.Remove(schedule);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok(new { message = "Schedule deleted successfully." });
         }
     }
 }

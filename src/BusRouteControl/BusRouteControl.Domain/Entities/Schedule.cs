@@ -1,11 +1,10 @@
 ﻿using BusRouteControl.Domain.Core;
+using BusRouteControl.Infrastructure.Core;
 
 namespace BusRouteControl.Domain.Entities;
 
-public partial class Schedule
+public partial class Schedule : BaseEntity
 {
-    public int Id { get; set; }
-
     public int RouteId { get; set; }
 
     public TimeOnly DepartureTime { get; set; }
