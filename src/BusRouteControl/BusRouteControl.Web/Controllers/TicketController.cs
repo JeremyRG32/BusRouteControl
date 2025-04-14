@@ -1,4 +1,4 @@
-﻿using BusRouteControl.API.Dtos;
+﻿using BusRouteControl.Domain.Dtos;
 using BusRouteControl.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 

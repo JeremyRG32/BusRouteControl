@@ -1,8 +1,7 @@
-﻿using BusRouteControl.API.Dtos;
-using BusRouteControl.Domain.Entities;
-using BusRouteControl.Infrastructure.Context;
+﻿using BusRouteControl.Domain.Dtos;
+using BusRouteControl.Infrastructure.Models;
+using BusRouteControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusRouteControl.API.Controllers
 {
@@ -10,17 +9,17 @@ namespace BusRouteControl.API.Controllers
     [ApiController]
     public class TicketController : ControllerBase
     {
-        private readonly BusRouteControlDbContext _context;
+        private readonly TicketRepository _ticketRepository;
 
-        public TicketController(BusRouteControlDbContext context)
+        public TicketController(TicketRepository ticketRepository)
         {
-            _context = context;
+            _ticketRepository = ticketRepository;
         }
 
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<TicketDto>>> GetTickets()
         {
-            var tickets = await _context.Tickets.ToListAsync();
+            var tickets = await _ticketRepository.GetAllTicketsAsync();
 
             var ticketDTOs = tickets.Select(ticket => new TicketDto
             {
@@ -38,12 +37,10 @@ namespace BusRouteControl.API.Controllers
         [HttpGet("Get/{id}")]
         public async Task<ActionResult<TicketDto>> GetTicket(int id)
         {
-            var ticket = await _context.Tickets.FindAsync(id);
+            var ticket = await _ticketRepository.GetTicketByIdAsync(id);
 
             if (ticket == null)
-            {
                 return NotFound();
-            }
 
             var ticketDTO = new TicketDto
             {
@@ -59,54 +56,45 @@ namespace BusRouteControl.API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<ActionResult<TicketDto>> CreateTicket(TicketDto ticketDTO)
+        public async Task<ActionResult<TicketDto>> CreateTicket(TicketDto dto)
         {
-            var ticket = new Ticket
+            var ticket = new TicketModel
             {
-                UserId = ticketDTO.UserId,
-                ScheduleId = ticketDTO.ScheduleId,
-                Price = ticketDTO.Price,
-                Status = ticketDTO.Status,
-                BookingDate = ticketDTO.BookingDate
+                UserId = dto.UserId,
+                ScheduleId = dto.ScheduleId,
+                Price = dto.Price,
+                Status = dto.Status,
+                BookingDate = dto.BookingDate
             };
 
-            _context.Tickets.Add(ticket);
-            await _context.SaveChangesAsync();
+            var newId = await _ticketRepository.CreateTicketAsync(ticket);
 
-            var createdTicketDTO = new TicketDto
-            {
-                Id = ticket.Id,
-                UserId = ticket.UserId,
-                ScheduleId = ticket.ScheduleId,
-                Price = ticket.Price,
-                Status = ticket.Status,
-                BookingDate = ticket.BookingDate
-            };
+            dto.Id = newId;
 
-            return CreatedAtAction("GetTicket", new { id = ticket.Id }, createdTicketDTO);
+            return CreatedAtAction("GetTicket", new { id = newId }, dto);
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> UpdateTicket(int id, TicketDto ticketDTO)
+        public async Task<IActionResult> UpdateTicket(int id, TicketDto dto)
         {
-            if (id != ticketDTO.Id)
-            {
+            if (id != dto.Id)
                 return BadRequest();
-            }
 
-            var ticket = await _context.Tickets.FindAsync(id);
+            var ticket = await _ticketRepository.GetTicketByIdAsync(id);
             if (ticket == null)
-            {
                 return NotFound();
-            }
-            ticket.UserId = ticketDTO.UserId;
-            ticket.ScheduleId = ticketDTO.ScheduleId;
-            ticket.Price = ticketDTO.Price;
-            ticket.Status = ticketDTO.Status;
-            ticket.BookingDate = ticketDTO.BookingDate;
 
-            _context.Entry(ticket).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            var model = new TicketModel
+            {
+                Id = ticket.Id,
+                UserId = dto.UserId,
+                ScheduleId = dto.ScheduleId,
+                Price = dto.Price,
+                Status = dto.Status,
+                BookingDate = dto.BookingDate
+            };
+
+            await _ticketRepository.UpdateTicketAsync(model);
 
             return NoContent();
         }
@@ -114,14 +102,9 @@ namespace BusRouteControl.API.Controllers
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteTicket(int id)
         {
-            var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket == null)
-            {
+            var deleted = await _ticketRepository.DeleteTicketAsync(id);
+            if (!deleted)
                 return NotFound();
-            }
-
-            _context.Tickets.Remove(ticket);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }

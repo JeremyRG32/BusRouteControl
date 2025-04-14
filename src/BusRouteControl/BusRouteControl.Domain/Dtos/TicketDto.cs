@@ -1,6 +1,6 @@
-﻿namespace BusRouteControl.Infrastructure.Models
+﻿namespace BusRouteControl.Domain.Dtos
 {
-    public class TicketModel
+    public class TicketDto
     {
         public int Id { get; set; }
         public int UserId { get; set; }

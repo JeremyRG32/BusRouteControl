@@ -1,8 +1,7 @@
-﻿using BusRouteControl.API.Dtos;
-using BusRouteControl.Domain.Entities;
-using BusRouteControl.Infrastructure.Context;
+﻿using BusRouteControl.Domain.Dtos;
+using BusRouteControl.Infrastructure.Models;
+using BusRouteControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusRouteControl.API.Controllers
 {
@@ -10,104 +9,100 @@ namespace BusRouteControl.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly BusRouteControlDbContext _context;
+        private readonly UserRepository _userRepository;
 
-        public UserController(BusRouteControlDbContext context)
+        public UserController(UserRepository userRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
         }
+
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
-            var users = await _context.Users
-                .Include(u => u.Tickets)
-                .Select(u => new UserDto
-                {
-                    Id = u.Id,
-                    Name = u.Name,
-                    Email = u.Email,
-                    Role = u.Role,
-                    Tickets = u.Tickets.Select(t => new TicketDto
-                    {
-                        Id = t.Id,
-                        UserId = t.UserId,
-                        Price = t.Price,
-                        Status = t.Status,
-                        BookingDate = t.BookingDate,
-                        ScheduleId = t.ScheduleId
-                    }).ToList()
-                })
-                .ToListAsync();
+            var users = await _userRepository.GetAllUsersWithTicketsAsync();
 
-            return Ok(users);
+            var userDtos = users.Select(u => new UserDto
+            {
+                Id = u.Id,
+                Name = u.Name,
+                Email = u.Email,
+                Role = u.Role,
+                Tickets = u.Tickets.Select(t => new TicketDto
+                {
+                    Id = t.Id,
+                    UserId = t.UserId,
+                    Price = t.Price,
+                    Status = t.Status,
+                    BookingDate = t.BookingDate,
+                    ScheduleId = t.ScheduleId
+                }).ToList()
+            }).ToList();
+
+            return Ok(userDtos);
         }
 
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<TicketDto>> GetUser(int id)
+        public async Task<ActionResult<UserDto>> GetUser(int id)
         {
-            var user = await _context.Users
-           .Include(u => u.Tickets)
-           .Where(u => u.Id == id)
-           .Select(u => new UserDto
-           {
-               Id = u.Id,
-               Name = u.Name,
-               Email = u.Email,
-               Role = u.Role,
-               Tickets = u.Tickets.Select(t => new TicketDto
-               {
-                   Id = t.Id,
-                   Price = t.Price,
-                   UserId = t.UserId,
-                   Status = t.Status,
-                   BookingDate = t.BookingDate,
-                   ScheduleId = t.ScheduleId
-               }).ToList()
-           })
-           .FirstOrDefaultAsync();
-
+            var user = await _userRepository.GetUserWithTicketsByIdAsync(id);
             if (user == null)
-            {
                 return NotFound();
-            }
 
-            return Ok(user);
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role,
+                Tickets = user.Tickets.Select(t => new TicketDto
+                {
+                    Id = t.Id,
+                    UserId = t.UserId,
+                    Price = t.Price,
+                    Status = t.Status,
+                    BookingDate = t.BookingDate,
+                    ScheduleId = t.ScheduleId
+                }).ToList()
+            };
+
+            return Ok(userDto);
         }
 
         [HttpPost("Create")]
         public async Task<ActionResult<UserDto>> CreateUser(UserDto userDto)
         {
-            var user = new User
+            var model = new UserModel
             {
                 Name = userDto.Name,
-                Password = userDto.Password,
                 Email = userDto.Email,
+                Password = userDto.Password,
                 Role = userDto.Role
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            var userId = await _userRepository.CreateUserAsync(model);
+            userDto.Id = userId;
 
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            return CreatedAtAction(nameof(GetUser), new { id = userId }, userDto);
         }
 
-
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserDto userDto)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDto userDto)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            if (id != userDto.Id)
+                return BadRequest();
+
+            var model = new UserModel
             {
+                Id = userDto.Id,
+                Name = userDto.Name,
+                Email = userDto.Email,
+                Password = userDto.Password,
+                Role = userDto.Role
+            };
+
+            var updated = await _userRepository.UpdateUserAsync(model);
+            if (!updated)
                 return NotFound();
-            }
-
-            user.Name = userDto.Name;
-            user.Email = userDto.Email;
-            user.Role = userDto.Role;
-            user.Password = userDto.Password;
-
-            _context.Entry(user).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -115,14 +110,9 @@ namespace BusRouteControl.API.Controllers
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
+            var deleted = await _userRepository.DeleteUserAsync(id);
+            if (!deleted)
                 return NotFound();
-            }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }

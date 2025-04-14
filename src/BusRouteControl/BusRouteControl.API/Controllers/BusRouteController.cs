@@ -1,4 +1,4 @@
-using BusRouteControl.API.Dtos;
+using BusRouteControl.Domain.Dtos;
 using BusRouteControl.Infrastructure.Models;
 using BusRouteControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;

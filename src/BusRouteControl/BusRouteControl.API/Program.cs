@@ -18,6 +18,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<BusRouteRepository>();
 builder.Services.AddScoped<ScheduleRepository>();
+builder.Services.AddScoped<TicketRepository>();
+builder.Services.AddScoped<UserRepository>();
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {

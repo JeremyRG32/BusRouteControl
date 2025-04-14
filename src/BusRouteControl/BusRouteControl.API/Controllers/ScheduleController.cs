@@ -1,4 +1,5 @@
-﻿using BusRouteControl.Infrastructure.Models;
+﻿using BusRouteControl.Domain.Dtos;
+using BusRouteControl.Infrastructure.Models;
 using BusRouteControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,10 +34,18 @@ namespace BusRouteControl.API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] ScheduleModel model)
+        public async Task<IActionResult> Create([FromBody] ScheduleDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest("The model is invalid.");
+
+            var model = new ScheduleModel
+            {
+                Id = dto.Id,
+                RouteId = dto.RouteId,
+                DepartureTime = dto.DepartureTime,
+                ArrivalTime = dto.ArrivalTime
+            };
 
             var created = await _scheduleRepository.Create(model);
             return Ok(new
@@ -47,8 +56,14 @@ namespace BusRouteControl.API.Controllers
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] ScheduleModel model)
+        public async Task<IActionResult> Update(int id, [FromBody] ScheduleDto dto)
         {
+            var model = new ScheduleModel
+            {
+                RouteId = dto.RouteId,
+                DepartureTime = dto.DepartureTime,
+                ArrivalTime = dto.ArrivalTime
+            };
             var success = await _scheduleRepository.Update(id, model);
             if (!success)
                 return NotFound(new { message = "Schedule not found." });
