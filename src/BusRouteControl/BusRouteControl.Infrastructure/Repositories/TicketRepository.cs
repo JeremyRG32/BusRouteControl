@@ -1,12 +1,13 @@
 ﻿using BusRouteControl.Domain.Entities;
 using BusRouteControl.Infrastructure.Context;
 using BusRouteControl.Infrastructure.Core;
+using BusRouteControl.Infrastructure.Interfaces;
 using BusRouteControl.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusRouteControl.Infrastructure.Repositories
 {
-    public class TicketRepository : BaseRepository<Ticket>
+    public class TicketRepository : BaseRepository<Ticket>, ITicketRepository
     {
         public TicketRepository(BusRouteControlDbContext context) : base(context) { }
         public async Task<List<Ticket>> GetAllTicketsAsync()

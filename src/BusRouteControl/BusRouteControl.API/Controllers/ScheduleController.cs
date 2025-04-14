@@ -1,6 +1,7 @@
 ﻿using BusRouteControl.Domain.Dtos;
+using BusRouteControl.Infrastructure.Contracts;
+using BusRouteControl.Infrastructure.Interfaces;
 using BusRouteControl.Infrastructure.Models;
-using BusRouteControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BusRouteControl.API.Controllers
@@ -9,24 +10,26 @@ namespace BusRouteControl.API.Controllers
     [ApiController]
     public class ScheduleController : ControllerBase
     {
-        private readonly ScheduleRepository _scheduleRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IScheduleRepository _scheduleRepository;
 
-        public ScheduleController(ScheduleRepository scheduleRepository)
+        public ScheduleController(IScheduleRepository scheduleRepository, IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _scheduleRepository = scheduleRepository;
         }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _scheduleRepository.GetAll();
+            var result = await _unitOfWork.Schedules.GetAll();
             return Ok(result);
         }
 
         [HttpGet("Get/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var schedule = await _scheduleRepository.GetEntityById(id);
+            var schedule = await _unitOfWork.Schedules.GetEntityById(id);
             if (schedule == null)
                 return NotFound(new { message = "Schedule not found." });
 
@@ -47,7 +50,7 @@ namespace BusRouteControl.API.Controllers
                 ArrivalTime = dto.ArrivalTime
             };
 
-            var created = await _scheduleRepository.Create(model);
+            var created = await _unitOfWork.Schedules.Create(model);
             return Ok(new
             {
                 message = "Schedule created successfully.",
@@ -64,7 +67,7 @@ namespace BusRouteControl.API.Controllers
                 DepartureTime = dto.DepartureTime,
                 ArrivalTime = dto.ArrivalTime
             };
-            var success = await _scheduleRepository.Update(id, model);
+            var success = await _unitOfWork.Schedules.Update(id, model);
             if (!success)
                 return NotFound(new { message = "Schedule not found." });
 
@@ -74,7 +77,7 @@ namespace BusRouteControl.API.Controllers
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var success = await _scheduleRepository.DeleteEntity(id);
+            var success = await _unitOfWork.Schedules.DeleteEntity(id);
             if (!success)
                 return NotFound(new { message = "Schedule not found." });
 

@@ -1,12 +1,13 @@
 ﻿using BusRouteControl.Domain.Entities;
 using BusRouteControl.Infrastructure.Context;
 using BusRouteControl.Infrastructure.Core;
+using BusRouteControl.Infrastructure.Interfaces;
 using BusRouteControl.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusRouteControl.Infrastructure.Repositories
 {
-    public class ScheduleRepository : BaseRepository<Schedule>
+    public class ScheduleRepository : BaseRepository<Schedule>, IScheduleRepository
     {
         public ScheduleRepository(BusRouteControlDbContext context) : base(context) { }
 

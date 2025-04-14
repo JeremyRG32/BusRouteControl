@@ -15,11 +15,10 @@ namespace BusRouteControl.Web.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            // Fetch all tickets from the API
             var ticketsResponse = await _httpClient.GetAsync("https://localhost:7192/api/Ticket/GetAll");
             if (!ticketsResponse.IsSuccessStatusCode)
             {
-                return NotFound(); // Return a 404 if the tickets aren't found
+                return NotFound();
             }
 
             var ticketDtos = await ticketsResponse.Content.ReadFromJsonAsync<List<TicketDto>>();

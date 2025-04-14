@@ -2,12 +2,13 @@
 using BusRouteControl.Domain.Entities;
 using BusRouteControl.Infrastructure.Context;
 using BusRouteControl.Infrastructure.Core;
+using BusRouteControl.Infrastructure.Interfaces;
 using BusRouteControl.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusRouteControl.Infrastructure.Repositories
 {
-    public class BusRouteRepository : BaseRepository<BusRoute>
+    public class BusRouteRepository : BaseRepository<BusRoute>, IBusRouteRepository
     {
 
         public BusRouteRepository(BusRouteControlDbContext context) : base(context) { }

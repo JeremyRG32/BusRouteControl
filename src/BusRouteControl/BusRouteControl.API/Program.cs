@@ -1,4 +1,7 @@
 using BusRouteControl.Infrastructure.Context;
+using BusRouteControl.Infrastructure.Contracts;
+using BusRouteControl.Infrastructure.Core;
+using BusRouteControl.Infrastructure.Interfaces;
 using BusRouteControl.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +19,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<BusRouteRepository>();
-builder.Services.AddScoped<ScheduleRepository>();
-builder.Services.AddScoped<TicketRepository>();
-builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IBusRouteRepository, BusRouteRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {

@@ -1,6 +1,7 @@
 using BusRouteControl.Domain.Dtos;
+using BusRouteControl.Infrastructure.Contracts;
+using BusRouteControl.Infrastructure.Interfaces;
 using BusRouteControl.Infrastructure.Models;
-using BusRouteControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BusRouteControl.API.Controllers
@@ -9,22 +10,24 @@ namespace BusRouteControl.API.Controllers
     [Route("[controller]")]
     public class BusRouteController : ControllerBase
     {
-        private readonly BusRouteRepository _busRouteRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IBusRouteRepository _busRouteRepository;
 
-        public BusRouteController(BusRouteRepository busRouteRepository)
+        public BusRouteController(IUnitOfWork unitOfWork, IBusRouteRepository busRouteRepository)
         {
+            _unitOfWork = unitOfWork;
             _busRouteRepository = busRouteRepository;
         }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _busRouteRepository.GetAll());
+            return Ok(await _unitOfWork.BusRoutes.GetAll());
         }
         [HttpGet("Get/{id}")]
         public async Task<IActionResult> GetBusRoute(int id)
         {
-            return Ok(await _busRouteRepository.GetBusRouteById(id));
+            return Ok(await _unitOfWork.BusRoutes.GetBusRouteById(id));
         }
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] BusRouteDto dto)
@@ -46,7 +49,7 @@ namespace BusRouteControl.API.Controllers
                     ArrivalTime = s.ArrivalTime.ToString()
                 }).ToList()
             };
-            model = await _busRouteRepository.Create(model);
+            model = await _unitOfWork.BusRoutes.Create(model);
             return Ok(new
             {
                 message = "Bus route created successfully.",
@@ -70,7 +73,7 @@ namespace BusRouteControl.API.Controllers
                     ArrivalTime = s.ArrivalTime.ToString()
                 }).ToList()
             };
-            var success = await _busRouteRepository.UpdateBusRoute(id, model);
+            var success = await _unitOfWork.BusRoutes.UpdateBusRoute(id, model);
             if (!success)
                 return NotFound();
 
@@ -80,7 +83,7 @@ namespace BusRouteControl.API.Controllers
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteBusRoute(int id)
         {
-            var success = await _busRouteRepository.DeleteBusRoute(id);
+            var success = await _unitOfWork.BusRoutes.DeleteBusRoute(id);
             if (!success)
                 return NotFound();
 

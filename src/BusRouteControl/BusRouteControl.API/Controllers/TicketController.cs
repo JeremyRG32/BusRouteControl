@@ -1,6 +1,7 @@
 ﻿using BusRouteControl.Domain.Dtos;
+using BusRouteControl.Infrastructure.Contracts;
+using BusRouteControl.Infrastructure.Interfaces;
 using BusRouteControl.Infrastructure.Models;
-using BusRouteControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BusRouteControl.API.Controllers
@@ -9,17 +10,19 @@ namespace BusRouteControl.API.Controllers
     [ApiController]
     public class TicketController : ControllerBase
     {
-        private readonly TicketRepository _ticketRepository;
+        private readonly ITicketRepository _ticketRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TicketController(TicketRepository ticketRepository)
+        public TicketController(ITicketRepository ticketRepository, IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _ticketRepository = ticketRepository;
         }
 
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<TicketDto>>> GetTickets()
         {
-            var tickets = await _ticketRepository.GetAllTicketsAsync();
+            var tickets = await _unitOfWork.Tickets.GetAllTicketsAsync();
 
             var ticketDTOs = tickets.Select(ticket => new TicketDto
             {
@@ -37,7 +40,7 @@ namespace BusRouteControl.API.Controllers
         [HttpGet("Get/{id}")]
         public async Task<ActionResult<TicketDto>> GetTicket(int id)
         {
-            var ticket = await _ticketRepository.GetTicketByIdAsync(id);
+            var ticket = await _unitOfWork.Tickets.GetTicketByIdAsync(id);
 
             if (ticket == null)
                 return NotFound();
@@ -67,7 +70,7 @@ namespace BusRouteControl.API.Controllers
                 BookingDate = dto.BookingDate
             };
 
-            var newId = await _ticketRepository.CreateTicketAsync(ticket);
+            var newId = await _unitOfWork.Tickets.CreateTicketAsync(ticket);
 
             dto.Id = newId;
 
@@ -80,7 +83,7 @@ namespace BusRouteControl.API.Controllers
             if (id != dto.Id)
                 return BadRequest();
 
-            var ticket = await _ticketRepository.GetTicketByIdAsync(id);
+            var ticket = await _unitOfWork.Tickets.GetTicketByIdAsync(id);
             if (ticket == null)
                 return NotFound();
 
@@ -94,7 +97,7 @@ namespace BusRouteControl.API.Controllers
                 BookingDate = dto.BookingDate
             };
 
-            await _ticketRepository.UpdateTicketAsync(model);
+            await _unitOfWork.Tickets.UpdateTicketAsync(model);
 
             return NoContent();
         }
@@ -102,7 +105,7 @@ namespace BusRouteControl.API.Controllers
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteTicket(int id)
         {
-            var deleted = await _ticketRepository.DeleteTicketAsync(id);
+            var deleted = await _unitOfWork.Tickets.DeleteTicketAsync(id);
             if (!deleted)
                 return NotFound();
 

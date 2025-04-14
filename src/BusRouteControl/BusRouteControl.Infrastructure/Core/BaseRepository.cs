@@ -1,9 +1,10 @@
 ﻿using BusRouteControl.Infrastructure.Context;
+using BusRouteControl.Infrastructure.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusRouteControl.Infrastructure.Core
 {
-    public class BaseRepository<T> where T : BaseEntity
+    public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
         protected readonly BusRouteControlDbContext Context;
         protected readonly DbSet<T> DbSet;
