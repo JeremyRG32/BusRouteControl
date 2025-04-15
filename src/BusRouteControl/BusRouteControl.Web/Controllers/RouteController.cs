@@ -74,6 +74,7 @@ namespace BusRouteControl.Web.Controllers
 
             return NotFound();
         }
+        [HttpPut]
         public async Task<IActionResult> Update(int id)
         {
             var response = await _httpClient.GetAsync($"https://localhost:7192/BusRoute/Get/{id}");

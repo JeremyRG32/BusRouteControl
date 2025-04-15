@@ -119,5 +119,20 @@ namespace BusRouteControl.API.Controllers
 
             return NoContent();
         }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        {
+            var user = await _unitOfWork.Users.GetByEmailAsync(loginDto.Email);
+
+            if (user == null || user.Password != loginDto.Password || user.Role != loginDto.Role)
+                return Unauthorized("Invalid credentials.");
+
+            return Ok(new
+            {
+                Email = user.Email,
+                Role = user.Role
+            });
+        }
+
     }
 }

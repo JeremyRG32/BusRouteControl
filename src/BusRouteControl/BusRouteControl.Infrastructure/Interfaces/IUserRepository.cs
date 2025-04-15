@@ -10,5 +10,6 @@ namespace BusRouteControl.Infrastructure.Interfaces
         Task<List<User>> GetAllUsersWithTicketsAsync();
         Task<User?> GetUserWithTicketsByIdAsync(int id);
         Task<bool> UpdateUserAsync(UserModel model);
+        Task<User> GetByEmailAsync(string email);
     }
 }

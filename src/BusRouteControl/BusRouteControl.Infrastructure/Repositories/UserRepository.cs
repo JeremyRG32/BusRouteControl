@@ -78,5 +78,9 @@ namespace BusRouteControl.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
     }
 }
