@@ -133,6 +133,13 @@ namespace BusRouteControl.API.Controllers
                 Role = user.Role
             });
         }
+        [HttpGet("GetByEmail/{email}")]
+        public async Task<ActionResult<UserDto>> GetByEmail(string email)
+        {
+            var user = await _unitOfWork.Users.GetByEmailAsync(email);
+            if (user == null) return NotFound();
+            return Ok(user);
+        }
 
     }
 }

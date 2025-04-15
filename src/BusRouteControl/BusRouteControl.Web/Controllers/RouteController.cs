@@ -1,4 +1,6 @@
-﻿using BusRouteControl.Web.Models;
+﻿using BusRouteControl.Domain.Dtos;
+using BusRouteControl.Infrastructure.Models;
+using BusRouteControl.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
@@ -74,7 +76,6 @@ namespace BusRouteControl.Web.Controllers
 
             return NotFound();
         }
-        [HttpPut]
         public async Task<IActionResult> Update(int id)
         {
             var response = await _httpClient.GetAsync($"https://localhost:7192/BusRoute/Get/{id}");
@@ -98,5 +99,35 @@ namespace BusRouteControl.Web.Controllers
 
             return NotFound();
         }
+        [HttpPost]
+        public async Task<IActionResult> Reserve(int scheduleId, decimal price)
+        {
+            var userresponse = await _httpClient.GetAsync($"https://localhost:7192/api/User/GetByEmail/{HttpContext.Session.GetString("UserEmail")}");
+            if (!userresponse.IsSuccessStatusCode)
+                return Unauthorized();
+
+            var json = await userresponse.Content.ReadAsStringAsync();
+            var user = JsonConvert.DeserializeObject<UserDto>(json);
+            var ticket = new TicketModel
+            {
+                UserId = user.Id,
+                ScheduleId = scheduleId,
+                Price = price,
+                Status = "Reserved",
+                BookingDate = DateTime.Now
+            };
+
+            var content = new StringContent(JsonConvert.SerializeObject(ticket), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("https://localhost:7192/api/Ticket/Create", content);
+
+            TempData["SuccessMessage"] = "Ticket created successfully!";
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+
+            return RedirectToAction("Index", "Route");
+        }
+
+
     }
 }

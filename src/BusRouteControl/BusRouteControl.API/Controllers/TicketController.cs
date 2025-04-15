@@ -89,7 +89,7 @@ namespace BusRouteControl.API.Controllers
 
             var model = new TicketModel
             {
-                Id = ticket.Id,
+                Id = dto.Id,
                 UserId = dto.UserId,
                 ScheduleId = dto.ScheduleId,
                 Price = dto.Price,

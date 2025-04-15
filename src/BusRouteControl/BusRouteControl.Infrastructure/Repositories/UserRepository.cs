@@ -9,23 +9,18 @@ namespace BusRouteControl.Infrastructure.Repositories
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
-        private readonly BusRouteControlDbContext _context;
-
-        public UserRepository(BusRouteControlDbContext context) : base(context)
-        {
-            _context = context;
-        }
+        public UserRepository(BusRouteControlDbContext context) : base(context) { }
 
         public async Task<List<User>> GetAllUsersWithTicketsAsync()
         {
-            return await _context.Users
+            return await Context.Users
                 .Include(u => u.Tickets)
                 .ToListAsync();
         }
 
         public async Task<User?> GetUserWithTicketsByIdAsync(int id)
         {
-            return await _context.Users
+            return await Context.Users
                 .Include(u => u.Tickets)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
@@ -47,14 +42,14 @@ namespace BusRouteControl.Infrastructure.Repositories
                     BookingDate = t.BookingDate
                 }).ToList()
             };
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            Context.Users.Add(user);
+            await Context.SaveChangesAsync();
             return user.Id;
         }
 
         public async Task<bool> UpdateUserAsync(UserModel model)
         {
-            var existingUser = await _context.Users.FindAsync(model.Id);
+            var existingUser = await Context.Users.FindAsync(model.Id);
             if (existingUser == null)
                 return false;
 
@@ -63,24 +58,24 @@ namespace BusRouteControl.Infrastructure.Repositories
             existingUser.Password = model.Password;
             existingUser.Role = model.Role;
 
-            _context.Entry(existingUser).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            Context.Entry(existingUser).State = EntityState.Modified;
+            await Context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> DeleteUserAsync(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await Context.Users.FindAsync(id);
             if (user == null)
                 return false;
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            Context.Users.Remove(user);
+            await Context.SaveChangesAsync();
             return true;
         }
         public async Task<User> GetByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await Context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }

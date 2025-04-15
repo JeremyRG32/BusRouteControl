@@ -49,10 +49,10 @@ namespace BusRouteControl.Web.Controllers
                     HttpContext.Session.SetString("UserRole", result.Role);
                     HttpContext.Session.SetString("UserEmail", result.Email);
 
-                    if (result.Role == "admin")
-                        return RedirectToAction("Route", "Index");
-                    else if (result.Role == "client")
-                        return RedirectToAction("ClientDashboard");
+                    if (result.Role == "Admin")
+                        return RedirectToAction("Index", "Route");
+                    else if (result.Role == "Client")
+                        return RedirectToAction("Index", "Route");
                 }
                 else
                 {
@@ -83,6 +83,11 @@ namespace BusRouteControl.Web.Controllers
                 return RedirectToAction("Login");
             }
             return View(model);
+        }
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Privacy()

@@ -35,15 +35,19 @@ namespace BusRouteControl.Infrastructure.Repositories
 
         public async Task<bool> UpdateTicketAsync(TicketModel model)
         {
-            var ticket = new Ticket
-            {
-                UserId = model.UserId,
-                ScheduleId = model.ScheduleId,
-                Price = model.Price,
-                Status = model.Status,
-                BookingDate = model.BookingDate
-            };
-            return await UpdateEntity(ticket);
+            var existingticket = await Context.Tickets.FindAsync(model.Id);
+            if (existingticket == null)
+                return false;
+
+            existingticket.Id = model.Id;
+            existingticket.ScheduleId = model.ScheduleId;
+            existingticket.Price = model.Price;
+            existingticket.Status = model.Status;
+            existingticket.BookingDate = model.BookingDate;
+
+            Context.Entry(existingticket).State = EntityState.Modified;
+            await Context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> DeleteTicketAsync(int id)

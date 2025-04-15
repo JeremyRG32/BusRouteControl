@@ -1,0 +1,84 @@
+﻿@model BusRouteScheduleViewModel
+
+<div class="w-100 card border-bottom-0">
+    <div class="card-header ml-0 py-3" style="background-color: #023673">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Edit Route</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-body border p-4">
+    <form method="post" asp-action="Reserve" asp-route-id="@Model.Id" class="row">
+
+        <div class="form-floating py-0 col-12">
+            <input asp-for="Id" hidden class="form-control border shadow" />
+            <label asp-for="Id" class="ms-2"></label>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="Name" class="form-control border shadow" />
+            <label asp-for="Name" class="ms-2">Route Name</label>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="Origin" class="form-control border shadow" />
+            <label asp-for="Origin" class="ms-2">Origin</label>
+            <span asp-validation-for="Origin" class="text-danger"></span>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="Destination" class="form-control border shadow" />
+            <label asp-for="Destination" class="ms-2">Destination</label>
+            <span asp-validation-for="Destination" class="text-danger"></span>
+        </div>
+        <div class="form-floating py-0 col-12">
+            <input asp-for="DefaultPrice" class="form-control border shadow" />
+            <label asp-for="DefaultPrice" class="ms-2">Price</label>
+            <span asp-validation-for="DefaultPrice" class="text-danger"></span>
+        </div>
+        <div class="w-100 card border-bottom-0">
+            <div class="card-header ml-0 py-3" style="background-color: #023673">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h2 class="text-white py-2">Edit Schedule</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="table" id="scheduleTable">
+            <thead>
+                <tr>
+                    <th>Departure Time</th>
+                    <th>Arrival Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Schedules.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <input type="hidden" name="Schedules[@i].Id" value="@Model.Schedules[i].Id" />
+                            <input type="time" name="Schedules[@i].DepartureTime" class="form-control" value="@Model.Schedules[i].DepartureTime" />
+                        </td>
+                        <td>
+                            <input type="time" name="Schedules[@i].ArrivalTime" class="form-control" value="@Model.Schedules[i].ArrivalTime" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="row pt-2">
+            <div class="col-7 col-md-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Confirm
+                </button>
+                <a class="btn btn-danger" asp-controller="Route" asp-action="Index"> <i class="bi bi-x-circle"></i> Cancel</a>
+
+            </div>
+        </div>
+    </form>
+</div>
