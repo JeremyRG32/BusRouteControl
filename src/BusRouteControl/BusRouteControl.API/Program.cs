@@ -1,3 +1,5 @@
+using BusRouteControl.Application.Contracts;
+using BusRouteControl.Application.Services;
 using BusRouteControl.Infrastructure.Context;
 using BusRouteControl.Infrastructure.Contracts;
 using BusRouteControl.Infrastructure.Core;
@@ -9,22 +11,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<BusRouteControlDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StrConnection")));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IBusRouteRepository, BusRouteRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+
+
+builder.Services.AddScoped<IBusRouteService, BusRouteService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IScheduleService, ScheduleService>();
 
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddScoped<IBusRouteRepository, BusRouteRepository>();
-builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
-builder.Services.AddScoped<ITicketRepository, TicketRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {

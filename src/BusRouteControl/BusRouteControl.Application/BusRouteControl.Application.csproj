@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BusRouteControl.Domain\BusRouteControl.Domain.csproj" />
+    <ProjectReference Include="..\BusRouteControl.Infrastructure\BusRouteControl.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

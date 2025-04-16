@@ -1,4 +1,5 @@
-﻿using BusRouteControl.Infrastructure.Context;
+﻿using BusRouteControl.Domain.Core;
+using BusRouteControl.Infrastructure.Context;
 using BusRouteControl.Infrastructure.Contracts;
 using Microsoft.EntityFrameworkCore;
 

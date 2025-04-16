@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BusRouteControl.Infrastructure.Core
+﻿namespace BusRouteControl.Domain.Core
 {
     public class BaseEntity
     {

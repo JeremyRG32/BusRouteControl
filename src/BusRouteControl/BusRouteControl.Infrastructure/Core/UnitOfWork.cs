@@ -1,4 +1,5 @@
-﻿using BusRouteControl.Infrastructure.Context;
+﻿using BusRouteControl.Domain.Core;
+using BusRouteControl.Infrastructure.Context;
 using BusRouteControl.Infrastructure.Contracts;
 using BusRouteControl.Infrastructure.Interfaces;
 
@@ -35,6 +36,22 @@ namespace BusRouteControl.Infrastructure.Core
         public void Dispose()
         {
             _context.Dispose();
+        }
+
+        public async Task<T> GetEntityById<T>(int id) where T : BaseEntity
+        {
+            var dbSet = _context.Set<T>();
+            return await dbSet.FindAsync(id);
+        }
+        public async Task<bool> DeleteEntity<T>(int id) where T : BaseEntity
+        {
+            var entity = await _context.Set<T>().FindAsync(id);
+            if (entity == null)
+                return false;
+
+            _context.Set<T>().Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

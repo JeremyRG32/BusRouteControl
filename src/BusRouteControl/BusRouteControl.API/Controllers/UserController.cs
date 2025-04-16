@@ -1,6 +1,5 @@
-﻿using BusRouteControl.Domain.Dtos;
-using BusRouteControl.Infrastructure.Contracts;
-using BusRouteControl.Infrastructure.Interfaces;
+﻿using BusRouteControl.Application.Contracts;
+using BusRouteControl.Domain.Dtos;
 using BusRouteControl.Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,19 +9,17 @@ namespace BusRouteControl.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserService _userService;
 
-        public UserController(IUserRepository userRepository, IUnitOfWork unitOfWork)
+        public UserController(IUserService userService)
         {
-            _unitOfWork = unitOfWork;
-            _userRepository = userRepository;
+            _userService = userService;
         }
 
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
-            var users = await _unitOfWork.Users.GetAllUsersWithTicketsAsync();
+            var users = await _userService.GetAllUsersWithTicketsAsync();
 
             var userDtos = users.Select(u => new UserDto
             {
@@ -47,7 +44,7 @@ namespace BusRouteControl.API.Controllers
         [HttpGet("Get/{id}")]
         public async Task<ActionResult<UserDto>> GetUser(int id)
         {
-            var user = await _unitOfWork.Users.GetUserWithTicketsByIdAsync(id);
+            var user = await _userService.GetUserWithTicketsByIdAsync(id);
             if (user == null)
                 return NotFound();
 
@@ -82,7 +79,7 @@ namespace BusRouteControl.API.Controllers
                 Role = userDto.Role
             };
 
-            var userId = await _unitOfWork.Users.CreateUserAsync(model);
+            var userId = await _userService.CreateUserAsync(model);
             userDto.Id = userId;
 
             return CreatedAtAction(nameof(GetUser), new { id = userId }, userDto);
@@ -103,7 +100,7 @@ namespace BusRouteControl.API.Controllers
                 Role = userDto.Role
             };
 
-            var updated = await _unitOfWork.Users.UpdateUserAsync(model);
+            var updated = await _userService.UpdateUserAsync(model);
             if (!updated)
                 return NotFound();
 
@@ -113,7 +110,7 @@ namespace BusRouteControl.API.Controllers
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var deleted = await _unitOfWork.Users.DeleteUserAsync(id);
+            var deleted = await _userService.DeleteUserAsync(id);
             if (!deleted)
                 return NotFound();
 
@@ -122,7 +119,7 @@ namespace BusRouteControl.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var user = await _unitOfWork.Users.GetByEmailAsync(loginDto.Email);
+            var user = await _userService.GetByEmailAsync(loginDto.Email);
 
             if (user == null || user.Password != loginDto.Password || user.Role != loginDto.Role)
                 return Unauthorized("Invalid credentials.");
@@ -136,7 +133,7 @@ namespace BusRouteControl.API.Controllers
         [HttpGet("GetByEmail/{email}")]
         public async Task<ActionResult<UserDto>> GetByEmail(string email)
         {
-            var user = await _unitOfWork.Users.GetByEmailAsync(email);
+            var user = await _userService.GetByEmailAsync(email);
             if (user == null) return NotFound();
             return Ok(user);
         }

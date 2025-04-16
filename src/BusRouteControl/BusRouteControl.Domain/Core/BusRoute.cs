@@ -1,5 +1,4 @@
 ﻿using BusRouteControl.Domain.Entities;
-using BusRouteControl.Infrastructure.Core;
 using System.ComponentModel.DataAnnotations;
 
 namespace BusRouteControl.Domain.Core;

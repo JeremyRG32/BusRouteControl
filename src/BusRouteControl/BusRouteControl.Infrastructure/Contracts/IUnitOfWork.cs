@@ -1,4 +1,5 @@
-﻿using BusRouteControl.Infrastructure.Interfaces;
+﻿using BusRouteControl.Domain.Core;
+using BusRouteControl.Infrastructure.Interfaces;
 
 namespace BusRouteControl.Infrastructure.Contracts
 {
@@ -9,5 +10,7 @@ namespace BusRouteControl.Infrastructure.Contracts
         ITicketRepository Tickets { get; }
         IScheduleRepository Schedules { get; }
         Task<int> SaveAsync();
+        Task<T> GetEntityById<T>(int id) where T : BaseEntity;
+        Task<bool> DeleteEntity<T>(int id) where T : BaseEntity;
     }
 }
